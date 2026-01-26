@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+}
+
+group = 'com.jpriva'
+version = '0.0.1-SNAPSHOT'
+description = 'erp-springboot'
+
+apply from: 'gradle/testing.gradle'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation platform(libs.spring.dotenv.bom)
+    implementation platform(libs.spring.modulith.bom)
+
+    implementation libs.bundles.web.stack
+    implementation libs.bundles.database
+    implementation libs.bundles.modulith
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    developmentOnly libs.bundles.development
+    testImplementation libs.bundles.testing
+    testRuntimeOnly libs.junit.platform.launcher
+}

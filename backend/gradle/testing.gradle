@@ -1,0 +1,41 @@
+def printTestResults = { desc, result ->
+    if (!desc.parent) {
+        println "\n=========================================================="
+        println "RESULTADOS DEL TEST: ${result.resultType}"
+        println "Total: ${result.testCount}"
+        println "Pasaron: ${result.successfulTestCount} (✅)"
+        println "Fallaron: ${result.failedTestCount} (❌)"
+        println "Saltados: ${result.skippedTestCount} (⚠️)"
+        println "==========================================================\n"
+    }
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    jvmArgs '-XX:+EnableDynamicAgentLoading', '-Xshare:off'
+
+    testLogging {
+        events "failed", "skipped"
+        exceptionFormat = "full"
+    }
+
+    afterSuite printTestResults
+}
+
+tasks.named('test') {
+    testLogging {
+        showStandardStreams = false
+    }
+}
+
+tasks.register('testWithLog', Test) {
+    description = 'Tests with console output'
+    group = 'verification'
+
+    testClassesDirs = project.sourceSets.test.output.classesDirs
+    classpath = project.sourceSets.test.runtimeClasspath
+
+    testLogging {
+        showStandardStreams = true
+    }
+}
