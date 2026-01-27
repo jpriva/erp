@@ -16,6 +16,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Paths */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@modules/*": ["src/modules/*"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

@@ -1,0 +1,13 @@
+{
+  "login": {
+    "title": "Iniciar Sesión",
+    "subtitle": "Por favor, ingresa tus credenciales para acceder",
+    "submit_button": "Ingresar",
+    "forgot_password": "¿Olvidaste tu contraseña?"
+  },
+  "forgot": {
+    "title": "Recuperar Contraseña",
+    "description": "Ingrese su dirección de correo electrónico a continuación para recibir instrucciones sobre cómo restablecer su contraseña.",
+    "send": "Enviar"
+  }
+}

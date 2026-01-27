@@ -1,0 +1,27 @@
+{
+  "forms": {
+    "buttons": {
+      "submit": "Submit",
+      "cancel": "Cancel"
+    },
+    "fields": {
+      "email": {
+        "label": "Email Address",
+        "placeholder": "user@company.com",
+        "errors": {
+          "invalid": "Invalid email address"
+        }
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "********",
+        "errors": {
+          "min_length": "Password must have at least 8 characters"
+        }
+      },
+      "errors": {
+        "required": "This field is required"
+      }
+    }
+  }
+}
