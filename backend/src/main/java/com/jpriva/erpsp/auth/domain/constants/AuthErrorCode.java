@@ -12,7 +12,10 @@ public enum AuthErrorCode implements ErrorCode {
     PASSWORD_VERIFICATION_FAILED("PASSWORD_VERIFICATION_FAILED", "Password verification failed.", 401),
     OPENID_TOKEN_INVALID("OPENID_TOKEN_INVALID", "Invalid OpenID token.", 401),
     BIOMETRIC_VERIFICATION_FAILED("BIOMETRIC_VERIFICATION_FAILED", "Biometric verification failed.", 401),
-    DEVICE_MISMATCH("DEVICE_MISMATCH", "Device mismatch.", 401);
+    DEVICE_MISMATCH("DEVICE_MISMATCH", "Device mismatch.", 401),
+    TENANT_NOT_FOUND("TENANT_NOT_FOUND", "Tenant not found.", 404),
+    TENANT_SUSPENDED("TENANT_SUSPENDED", "Tenant is suspended.", 403),
+    TENANT_DELETED("TENANT_DELETED", "Tenant has been deleted.", 410);
 
     public static final String AUTH_MODULE = "AUTH";
 
