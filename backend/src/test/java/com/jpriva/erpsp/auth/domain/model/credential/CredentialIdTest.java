@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class CredentialIdTest {
 
     @Nested
-    class CredentialIdHappyPathsTest {
+    class HappyPathTests {
         @Test
         void constructor_CreateCredentialId_Success() {
             UUID uuid = UUID.randomUUID();
@@ -48,7 +48,7 @@ class CredentialIdTest {
     }
 
     @Nested
-    class CredentialValidationTests {
+    class ValidationTests {
 
         @Test
         void constructor_CreateCredentialId_FailIfNullValue() {
@@ -96,5 +96,4 @@ class CredentialIdTest {
                     });
         }
     }
-
 }
