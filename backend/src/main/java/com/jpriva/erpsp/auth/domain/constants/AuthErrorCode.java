@@ -15,7 +15,8 @@ public enum AuthErrorCode implements ErrorCode {
     DEVICE_MISMATCH("DEVICE_MISMATCH", "Device mismatch.", 401),
     TENANT_NOT_FOUND("TENANT_NOT_FOUND", "Tenant not found.", 404),
     TENANT_SUSPENDED("TENANT_SUSPENDED", "Tenant is suspended.", 403),
-    TENANT_DELETED("TENANT_DELETED", "Tenant has been deleted.", 410);
+    TENANT_DELETED("TENANT_DELETED", "Tenant has been deleted.", 410),
+    ROLE_NOT_FOUND("ROLE_NOT_FOUND", "Role not found.", 404);
 
     public static final String AUTH_MODULE = "AUTH";
 

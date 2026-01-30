@@ -23,7 +23,7 @@ public class Tenant {
     private static final String FIELD_CREATED_AT = "createdAt";
 
     private final TenantId tenantId;
-    private final UserId ownerId;
+    private UserId ownerId;
     private TenantName name;
     private TenantStatus status;
     private final Instant createdAt;
@@ -97,6 +97,15 @@ public class Tenant {
 
     public void markAsDeleted() {
         this.status = TenantStatus.DELETED;
+    }
+
+    public void transferOwnership(UserId newOwnerId) {
+        var val = new ValidationError.Builder();
+        if (newOwnerId == null) {
+            val.addError(FIELD_OWNER_ID, OWNER_ID_NULL_ERROR);
+            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+        }
+        this.ownerId = newOwnerId;
     }
 
     public boolean isActive() {

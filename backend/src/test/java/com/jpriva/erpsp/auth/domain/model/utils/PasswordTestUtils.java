@@ -1,8 +1,6 @@
 package com.jpriva.erpsp.auth.domain.model.utils;
 
-import com.jpriva.erpsp.auth.domain.model.credential.BiometricType;
 import com.jpriva.erpsp.auth.domain.model.credential.OpenIdProvider;
-import com.jpriva.erpsp.auth.domain.ports.out.BiometricVerifierPort;
 import com.jpriva.erpsp.auth.domain.ports.out.OpenIdTokenValidatorPort;
 import com.jpriva.erpsp.auth.domain.ports.out.PasswordHasherPort;
 

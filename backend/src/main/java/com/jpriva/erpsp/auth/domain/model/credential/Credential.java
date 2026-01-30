@@ -9,7 +9,7 @@ import java.time.Instant;
  * Uses sealed class hierarchy for type safety with pattern matching.
  */
 public abstract sealed class Credential
-        permits PasswordCredential, OpenIdCredential, BiometricCredential {
+        permits PasswordCredential, OpenIdCredential {
 
     private final CredentialId credentialId;
     private final UserId userId;
