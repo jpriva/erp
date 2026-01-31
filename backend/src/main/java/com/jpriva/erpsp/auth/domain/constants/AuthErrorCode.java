@@ -29,7 +29,9 @@ public enum AuthErrorCode implements ErrorCode {
     INVITATION_NOT_VALID("INVITATION_NOT_VALID", "Invitation is not valid.", 400),
     INVITATION_EXPIRED("INVITATION_EXPIRED", "Invitation has expired.", 400),
     INVITATION_EMAIL_MISMATCH("INVITATION_EMAIL_MISMATCH", "Invitation email does not match the user's email.", 400),
-    INVITATION_ALREADY_EXISTS("INVITATION_ALREADY_EXISTS", "An invitation already exists for the same email and tenant.", 400);
+    INVITATION_ALREADY_EXISTS("INVITATION_ALREADY_EXISTS", "An invitation already exists for the same email and tenant.", 400),
+    TOKEN_INVALID("TOKEN_INVALID", "Token is invalid or expired.", 401),
+    TOKEN_EXPIRED("TOKEN_EXPIRED", "Token has expired.", 401);
 
     public static final String AUTH_MODULE = "AUTH";
 

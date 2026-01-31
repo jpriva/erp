@@ -6,9 +6,11 @@ import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthException;
 import com.jpriva.erpsp.auth.domain.model.credential.Credential;
 import com.jpriva.erpsp.auth.domain.model.credential.PasswordCredential;
+import com.jpriva.erpsp.auth.domain.model.token.TokenPair;
 import com.jpriva.erpsp.auth.domain.model.user.User;
 import com.jpriva.erpsp.auth.domain.ports.out.CredentialRepositoryPort;
 import com.jpriva.erpsp.auth.domain.ports.out.PasswordHasherPort;
+import com.jpriva.erpsp.auth.domain.ports.out.TokenHandlerPort;
 import com.jpriva.erpsp.auth.domain.ports.out.TransactionalPort;
 import com.jpriva.erpsp.auth.domain.ports.out.UserRepositoryPort;
 import com.jpriva.erpsp.shared.domain.model.Email;
@@ -19,17 +21,20 @@ public class LoginLocalUserUseCase {
     private final UserRepositoryPort userRepository;
     private final CredentialRepositoryPort credentialRepository;
     private final PasswordHasherPort passwordHasher;
+    private final TokenHandlerPort tokenHandler;
 
     public LoginLocalUserUseCase(
             TransactionalPort transactionalPort,
             UserRepositoryPort userRepository,
             CredentialRepositoryPort credentialRepository,
-            PasswordHasherPort passwordHasher
+            PasswordHasherPort passwordHasher,
+            TokenHandlerPort tokenHandler
     ) {
         this.transactionalPort = transactionalPort;
         this.userRepository = userRepository;
         this.credentialRepository = credentialRepository;
         this.passwordHasher = passwordHasher;
+        this.tokenHandler = tokenHandler;
     }
 
     public TokenView execute(LocalLoginCommand cmd) {
@@ -48,8 +53,15 @@ public class LoginLocalUserUseCase {
             } else {
                 throw new ErpAuthException(AuthErrorCode.CREDENTIAL_INVALID);
             }
-            TokenView token = new TokenView("", "", 0, "", "");
-            return token;
+
+            TokenPair tokens = tokenHandler.generateTokens(user);
+            return new TokenView(
+                    tokens.accessToken(),
+                    "Bearer",
+                    tokens.accessTokenExpiresIn(),
+                    tokens.refreshToken(),
+                    "read write"
+            );
         });
     }
 }

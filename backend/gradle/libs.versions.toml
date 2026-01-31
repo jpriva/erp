@@ -5,6 +5,7 @@ dependencyManagement = "1.1.7"
 
 springModulithBom = "2.0.1"
 springDotenv = "5.1.0"
+jjwt = "0.12.6"
 
 [libraries]
 spring-modulith-bom = { module = "org.springframework.modulith:spring-modulith-bom", version.ref = "springModulithBom" }
@@ -32,6 +33,10 @@ spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-bo
 
 spring-modulith-starter-test = { module = "org.springframework.modulith:spring-modulith-starter-test" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
 
 spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql" }
@@ -66,3 +71,4 @@ testing = [
     "testcontainers-postgresql"
 ]
 development = ["spring-boot-devtools", "spring-dotenv"]
+jwt = ["jjwt-api", "jjwt-impl", "jjwt-jackson"]
