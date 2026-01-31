@@ -21,7 +21,7 @@ public record Email(String value) {
             val.addError(FIELD_NAME, EMPTY_VALUE);
         }
         value = value.trim();
-        if (value.length() > 254){
+        if (value.length() > 254) {
             val.addError(FIELD_NAME, ValidationErrorUtils.errorLessOrEqualThan(FIELD_NAME, 254, "characters"));
         }
         if (!EMAIL_PATTERN.matcher(value).matches()) {
@@ -29,5 +29,11 @@ public record Email(String value) {
         }
 
         ValidationErrorUtils.validate(ErpErrorCodes.SHARED_MODULE, val);
+    }
+
+    @SuppressWarnings("NullableProblems")
+    @Override
+    public String toString() {
+        return value;
     }
 }

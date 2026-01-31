@@ -1,10 +1,10 @@
 package com.jpriva.erpsp.auth.domain.model.invitation;
 
-import com.jpriva.erpsp.auth.domain.model.credential.Email;
 import com.jpriva.erpsp.auth.domain.model.role.RoleId;
 import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
 import com.jpriva.erpsp.auth.domain.model.user.UserId;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
+import com.jpriva.erpsp.shared.domain.model.Email;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -166,8 +166,7 @@ class InvitationTest {
         Invitation invitation = Invitation.create(tenantId, email, invitedBy, roleIds, validFor);
         invitation.reject();
 
-        assertThrows(ErpValidationException.class, () ->
-                invitation.reject()
+        assertThrows(ErpValidationException.class, invitation::reject
         );
     }
 
@@ -177,8 +176,7 @@ class InvitationTest {
         Invitation invitation = Invitation.create(tenantId, email, invitedBy, roleIds, validFor);
         invitation.accept(new UserId(UUID.randomUUID()));
 
-        assertThrows(ErpValidationException.class, () ->
-                invitation.cancel()
+        assertThrows(ErpValidationException.class, invitation::cancel
         );
     }
 

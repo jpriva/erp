@@ -32,16 +32,4 @@ public class PasswordTestUtils {
             return null;
         }
     };
-
-    public static final BiometricVerifierPort fakeBiometricVerifier = new BiometricVerifierPort() {
-        @Override
-        public boolean verify(byte[] biometricSample, String templateId, BiometricType biometricType) {
-            return biometricSample != null && biometricSample.length > 0;
-        }
-
-        @Override
-        public String enroll(byte[] biometricSample, BiometricType biometricType) {
-            return "enrolled-template-" + biometricType.name();
-        }
-    };
 }

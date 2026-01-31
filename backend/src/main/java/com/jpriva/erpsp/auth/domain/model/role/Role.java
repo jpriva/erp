@@ -1,6 +1,7 @@
 package com.jpriva.erpsp.auth.domain.model.role;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.RoleValidationError;
 import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
 import com.jpriva.erpsp.auth.domain.model.user.UserId;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
@@ -14,13 +15,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Role {
-    private static final String ROLE_ID_NULL_ERROR = "Role ID cannot be null";
-    private static final String TENANT_ID_NULL_ERROR = "Tenant ID cannot be null";
-    private static final String NAME_NULL_ERROR = "Role Name cannot be null";
-
-    private static final String FIELD_ROLE_ID = "roleId";
-    private static final String FIELD_TENANT_ID = "tenantId";
-    private static final String FIELD_NAME = "name";
 
     private final RoleId roleId;
     private final TenantId tenantId;
@@ -30,13 +24,13 @@ public class Role {
     public Role(RoleId roleId, TenantId tenantId, RoleName name, Set<UserId> members) {
         var val = new ValidationError.Builder();
         if (roleId == null) {
-            val.addError(FIELD_ROLE_ID, ROLE_ID_NULL_ERROR);
+            val.addError(RoleValidationError.ID_EMPTY);
         }
         if (tenantId == null) {
-            val.addError(FIELD_TENANT_ID, TENANT_ID_NULL_ERROR);
+            val.addError(RoleValidationError.TENANT_ID_EMPTY);
         }
         if (name == null) {
-            val.addError(FIELD_NAME, NAME_NULL_ERROR);
+            val.addError(RoleValidationError.NAME_EMPTY);
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
 
@@ -48,6 +42,9 @@ public class Role {
 
     public static Role create(TenantId tenantId, String name) {
         var val = new ValidationError.Builder();
+        if (tenantId == null) {
+            val.addError(RoleValidationError.TENANT_ID_EMPTY);
+        }
         RoleName roleName = null;
         try {
             roleName = new RoleName(name);

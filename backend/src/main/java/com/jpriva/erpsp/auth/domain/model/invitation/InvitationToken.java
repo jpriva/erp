@@ -1,6 +1,7 @@
 package com.jpriva.erpsp.auth.domain.model.invitation;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.InvitationValidationError;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
 import com.jpriva.erpsp.shared.domain.model.ValidationError;
 
@@ -12,9 +13,6 @@ import java.util.Base64;
  * Generated using SecureRandom with 256-bit entropy (64 Base64 characters).
  */
 public record InvitationToken(String value) {
-    private static final String FIELD_NAME = "invitationToken";
-    private static final String EMPTY_VALUE = "Can't create an empty invitation token.";
-    private static final String INVALID_FORMAT = "Invitation token must be 64 characters (Base64 encoded).";
     private static final int TOKEN_BYTES = 48; // 48 bytes * 8/6 = 64 Base64 characters
     private static final int TOKEN_CHARS = 64;
 
@@ -23,13 +21,13 @@ public record InvitationToken(String value) {
         if (value == null || value.isBlank()) {
             throw new ErpValidationException(
                     AuthErrorCode.AUTH_MODULE,
-                    val.addError(FIELD_NAME, EMPTY_VALUE).build()
+                    val.addError(InvitationValidationError.TOKEN_EMPTY).build()
             );
         }
         if (value.length() != TOKEN_CHARS) {
             throw new ErpValidationException(
                     AuthErrorCode.AUTH_MODULE,
-                    val.addError(FIELD_NAME, INVALID_FORMAT).build()
+                    val.addError(InvitationValidationError.TOKEN_FORMAT).build()
             );
         }
     }
@@ -44,7 +42,6 @@ public record InvitationToken(String value) {
         String token = Base64.getUrlEncoder()
                 .withoutPadding()
                 .encodeToString(randomBytes);
-        // Ensure consistent length
         if (token.length() > TOKEN_CHARS) {
             token = token.substring(0, TOKEN_CHARS);
         }

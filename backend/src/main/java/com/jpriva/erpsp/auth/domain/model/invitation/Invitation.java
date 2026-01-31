@@ -1,6 +1,8 @@
 package com.jpriva.erpsp.auth.domain.model.invitation;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.InvitationValidationError;
+import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthValidationException;
 import com.jpriva.erpsp.auth.domain.model.role.RoleId;
 import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
 import com.jpriva.erpsp.auth.domain.model.user.UserId;
@@ -10,6 +12,7 @@ import com.jpriva.erpsp.shared.domain.model.Email;
 import com.jpriva.erpsp.shared.domain.model.ValidationError;
 import com.jpriva.erpsp.shared.domain.utils.ValidationErrorUtils;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
@@ -73,33 +76,33 @@ public class Invitation {
     ) {
         var val = new ValidationError.Builder();
         if (invitationId == null) {
-            val.addError(FIELD_INVITATION_ID, INVITATION_ID_NULL_ERROR);
+            val.addError(InvitationValidationError.ID_EMPTY);
         }
         if (tenantId == null) {
-            val.addError(FIELD_TENANT_ID, TENANT_ID_NULL_ERROR);
+            val.addError(InvitationValidationError.TENANT_ID_EMPTY);
         }
         if (email == null) {
-            val.addError(FIELD_EMAIL, EMAIL_NULL_ERROR);
+            val.addError(InvitationValidationError.EMAIL_EMPTY);
         }
         if (invitedBy == null) {
-            val.addError(FIELD_INVITED_BY, INVITED_BY_NULL_ERROR);
+            val.addError(InvitationValidationError.INVITED_BY_EMPTY);
         }
         if (roleIds == null) {
-            val.addError(FIELD_ROLE_IDS, ROLE_IDS_NULL_ERROR);
+            val.addError(InvitationValidationError.ROLE_IDS_EMPTY);
         } else if (roleIds.isEmpty()) {
-            val.addError(FIELD_ROLE_IDS, ROLE_IDS_EMPTY_ERROR);
+            val.addError(InvitationValidationError.ROLE_IDS_EMPTY);
         }
         if (status == null) {
-            val.addError(FIELD_STATUS, STATUS_NULL_ERROR);
+            val.addError(InvitationValidationError.STATUS_EMPTY);
         }
         if (token == null) {
-            val.addError(FIELD_TOKEN, TOKEN_NULL_ERROR);
+            val.addError(InvitationValidationError.TOKEN_EMPTY);
         }
         if (createdAt == null) {
-            val.addError(FIELD_CREATED_AT, CREATED_AT_NULL_ERROR);
+            val.addError(InvitationValidationError.CREATED_AT_EMPTY);
         }
         if (expiresAt == null) {
-            val.addError(FIELD_EXPIRES_AT, EXPIRES_AT_NULL_ERROR);
+            val.addError(InvitationValidationError.EXPIRES_AT_EMPTY);
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
 
@@ -107,6 +110,7 @@ public class Invitation {
         this.tenantId = tenantId;
         this.email = email;
         this.invitedBy = invitedBy;
+        assert roleIds != null;
         this.roleIds = new HashSet<>(roleIds);
         this.status = status;
         this.token = token;
@@ -128,17 +132,16 @@ public class Invitation {
             Email email,
             UserId invitedBy,
             Set<RoleId> roleIds,
-            java.time.Duration validFor
+            Duration validFor
     ) {
         var val = new ValidationError.Builder();
         if (roleIds == null || roleIds.isEmpty()) {
-            val.addError(FIELD_ROLE_IDS, ROLE_IDS_EMPTY_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            val.addError(InvitationValidationError.ROLE_IDS_EMPTY);
         }
         if (validFor == null || validFor.isNegative() || validFor.isZero()) {
-            val.addError("validFor", "Validity duration must be positive");
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            val.addError(InvitationValidationError.VALID_FOR_INVALID);
         }
+        ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
 
         Instant now = Instant.now();
         return new Invitation(
@@ -198,20 +201,18 @@ public class Invitation {
     public void accept(UserId userId) {
         var val = new ValidationError.Builder();
         if (userId == null) {
-            val.addError("userId", "User ID cannot be null");
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            val.addError(InvitationValidationError.USER_ID_EMPTY);
         }
 
         if (status != InvitationStatus.PENDING) {
-            val.addError(FIELD_STATUS, INVITATION_NOT_PENDING_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            val.addError(InvitationValidationError.STATUS_INVALID);
         }
 
         if (isExpired()) {
             status = InvitationStatus.EXPIRED;
-            val.addError(FIELD_STATUS, INVITATION_EXPIRED_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            val.addError(InvitationValidationError.STATUS_EXPIRED);
         }
+        ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
 
         this.status = InvitationStatus.ACCEPTED;
     }
@@ -224,9 +225,7 @@ public class Invitation {
      */
     public void reject() {
         if (status != InvitationStatus.PENDING) {
-            var val = new ValidationError.Builder();
-            val.addError(FIELD_STATUS, INVITATION_NOT_PENDING_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            throw new ErpAuthValidationException(ValidationError.createSingle(InvitationValidationError.STATUS_INVALID));
         }
         this.status = InvitationStatus.REJECTED;
     }
@@ -239,9 +238,7 @@ public class Invitation {
      */
     public void cancel() {
         if (status != InvitationStatus.PENDING) {
-            var val = new ValidationError.Builder();
-            val.addError(FIELD_STATUS, INVITATION_NOT_PENDING_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            throw new ErpAuthValidationException(ValidationError.createSingle(InvitationValidationError.STATUS_INVALID));
         }
         this.status = InvitationStatus.CANCELLED;
     }

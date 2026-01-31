@@ -49,16 +49,13 @@ public class TenantCreator {
      * @return the created tenant
      */
     public Tenant createTenant(UserId ownerId, String tenantName) {
-        // Step 1: Create and save tenant
         Tenant tenant = Tenant.create(ownerId, tenantName);
         tenantRepository.save(tenant);
 
-        // Step 2: Create and save an ADMIN role
         Role adminRole = Role.createDefaultRoles(tenant.getTenantId());
         adminRole.assignUser(ownerId);
         roleRepository.save(adminRole);
 
-        // Step 3: Create owner membership with the ADMIN role
         Set<MembershipRole> ownerRoles = new HashSet<>();
         ownerRoles.add(MembershipRole.create(adminRole.getRoleId(), adminRole.getName(), ownerId));
 
@@ -66,7 +63,7 @@ public class TenantCreator {
                 ownerId,
                 tenant.getTenantId(),
                 ownerRoles,
-                ownerId  // Owner invited by themselves
+                ownerId
         );
         membershipRepository.save(ownerMembership);
 

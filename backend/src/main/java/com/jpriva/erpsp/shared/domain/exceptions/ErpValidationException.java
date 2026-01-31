@@ -14,18 +14,8 @@ public class ErpValidationException extends ErpException {
         this.errors = errors;
     }
 
-    public ErpValidationException(String module, ValidationError errors, String message) {
-        super(module, ErpErrorCodes.VALIDATION_ERROR, message);
-        this.errors = errors;
-    }
-
     public ErpValidationException(String module, ValidationError errors, Throwable cause) {
         super(module, ErpErrorCodes.VALIDATION_ERROR, cause);
-        this.errors = errors;
-    }
-
-    public ErpValidationException(String module, ValidationError errors, String message, Throwable cause) {
-        super(module, ErpErrorCodes.VALIDATION_ERROR, message, cause);
         this.errors = errors;
     }
 

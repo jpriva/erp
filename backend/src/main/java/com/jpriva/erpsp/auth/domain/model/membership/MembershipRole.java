@@ -1,6 +1,7 @@
 package com.jpriva.erpsp.auth.domain.model.membership;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.TenantMembershipValidationError;
 import com.jpriva.erpsp.auth.domain.model.role.RoleId;
 import com.jpriva.erpsp.auth.domain.model.role.RoleName;
 import com.jpriva.erpsp.auth.domain.model.user.UserId;
@@ -19,24 +20,20 @@ public record MembershipRole(
         Instant assignedAt,
         UserId assignedBy
 ) {
-    private static final String ROLE_ID_NULL_ERROR = "Role ID cannot be null";
-    private static final String ROLE_NAME_NULL_ERROR = "Role name cannot be null";
-    private static final String ASSIGNED_AT_NULL_ERROR = "Assigned at cannot be null";
-    private static final String ASSIGNED_BY_NULL_ERROR = "Assigned by cannot be null";
 
     public MembershipRole {
         var val = ValidationError.builder();
         if (roleId == null) {
-            val.addError("roleId", ROLE_ID_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.ROLE_ID_EMPTY);
         }
         if (roleName == null) {
-            val.addError("roleName", ROLE_NAME_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.ROLE_NAME_EMPTY);
         }
         if (assignedAt == null) {
-            val.addError("assignedAt", ASSIGNED_AT_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.ASSIGNED_AT_EMPTY);
         }
         if (assignedBy == null) {
-            val.addError("assignedBy", ASSIGNED_BY_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.ASSIGNED_BY_EMPTY);
         }
         if (val.hasErrors()) {
             throw new ErpValidationException(AuthErrorCode.AUTH_MODULE, val.build());

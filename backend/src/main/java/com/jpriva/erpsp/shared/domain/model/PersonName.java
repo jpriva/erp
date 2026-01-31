@@ -9,31 +9,32 @@ public record PersonName(
 ) {
     public static final String FIELD_FIRSTNAME = "firstName";
     public static final String FIELD_LASTNAME = "lastName";
+
     public PersonName {
         var val = ValidationError.builder();
         if (firstName == null) firstName = "";
         if (lastName == null) lastName = "";
         firstName = firstName.trim();
         lastName = lastName.trim();
-        if (firstName.length()<2) {
+        if (firstName.length() < 2) {
             val.addError(
                     FIELD_FIRSTNAME,
                     ValidationErrorUtils.errorGreaterOrEqualThan("First name", 2, "characters"))
             ;
         }
-        if (firstName.length()>100) {
+        if (firstName.length() > 100) {
             val.addError(
                     FIELD_FIRSTNAME,
                     ValidationErrorUtils.errorLessOrEqualThan("First name", 100, "characters")
             );
         }
-        if (lastName.length()<2) {
+        if (lastName.length() < 2) {
             val.addError(
                     FIELD_LASTNAME,
                     ValidationErrorUtils.errorGreaterOrEqualThan("Last name", 2, "characters")
             );
         }
-        if (lastName.length()>100) {
+        if (lastName.length() > 100) {
             val.addError(
                     FIELD_LASTNAME,
                     ValidationErrorUtils.errorLessOrEqualThan("Last name", 100, "characters")
@@ -43,7 +44,7 @@ public record PersonName(
     }
 
     public String fullName() {
-        return String.format("%s %s", firstName, lastName);
+        return String.format("%s %s", firstName, lastName).trim();
     }
 
 }

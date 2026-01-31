@@ -1,11 +1,11 @@
 package com.jpriva.erpsp.auth.domain.model.tenant;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.TenantValidationError;
 import com.jpriva.erpsp.shared.domain.model.ValidationError;
 import com.jpriva.erpsp.shared.domain.utils.ValidationErrorUtils;
 
 public record TenantName(String value) {
-    private static final String FIELD_NAME = "tenantName";
     private static final int MIN_LENGTH = 2;
     private static final int MAX_LENGTH = 100;
 
@@ -14,16 +14,10 @@ public record TenantName(String value) {
         if (value == null) value = "";
         value = value.trim();
         if (value.length() < MIN_LENGTH) {
-            val.addError(
-                    FIELD_NAME,
-                    ValidationErrorUtils.errorGreaterOrEqualThan("Tenant name", MIN_LENGTH, "characters")
-            );
+            val.addError(TenantValidationError.NAME_MIN_LENGTH);
         }
         if (value.length() > MAX_LENGTH) {
-            val.addError(
-                    FIELD_NAME,
-                    ValidationErrorUtils.errorLessOrEqualThan("Tenant name", MAX_LENGTH, "characters")
-            );
+            val.addError(TenantValidationError.NAME_MAX_LENGTH);
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
     }

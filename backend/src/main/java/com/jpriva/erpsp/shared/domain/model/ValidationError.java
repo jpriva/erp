@@ -1,67 +1,54 @@
 package com.jpriva.erpsp.shared.domain.model;
 
 import com.jpriva.erpsp.shared.domain.exceptions.ErpImplementationException;
+import com.jpriva.erpsp.shared.domain.exceptions.ValidationErrorCode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-public record ValidationError(Map<String, List<String>> errors) {
+public record ValidationError(List<ValidationErrorCode> errors) {
 
-    private static final String EMPTY_FIELD = "Field can't be null or empty";
-    private static final String EMPTY_ERROR = "Error can't be null or empty";
+    private static final String VALIDATION_ERROR_CODE = "ValidationErrorCode cannot be empty";
 
     public ValidationError {
-        if (errors == null) {
-            errors = Map.of();
-        } else {
-            errors = errors.entrySet().stream()
-                    .collect(Collectors.toUnmodifiableMap(
-                            Map.Entry::getKey,
-                            entry -> List.copyOf(entry.getValue())
-                    ));
-        }
+        errors = (errors == null) ? List.of() : List.copyOf(errors);
+    }
+
+    public static ValidationError createSingle(ValidationErrorCode error) {
+        if (error == null) throw new ErpImplementationException(VALIDATION_ERROR_CODE);
+        return new ValidationError(List.of(error));
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static Builder builder(ValidationError prototype) {
-        return new Builder(prototype);
-    }
-
     public static class Builder {
-        private final Map<String, List<String>> tempErrors = new HashMap<>();
+        private final List<ValidationErrorCode> tempErrors = new ArrayList<>();
 
         public Builder() {
         }
 
-        public Builder(ValidationError prototype) {
-            addValidation(prototype);
+        public Builder(ValidationErrorCode error) {
+            if (error == null) throw new ErpImplementationException(VALIDATION_ERROR_CODE);
+            tempErrors.add(error);
         }
 
-        public Builder addValidation(ValidationError prototype){
-            if (prototype != null) {
-                prototype.errors().forEach((field, messages) ->
-                        this.tempErrors.put(field, new ArrayList<>(messages))
-                );
-            }
+        public Builder(List<ValidationErrorCode> errors) {
+            if (errors != null && !errors.isEmpty())
+                tempErrors.addAll(errors);
+        }
+
+        public Builder addError(ValidationErrorCode error) {
+            if (error == null) throw new ErpImplementationException(VALIDATION_ERROR_CODE);
+            this.tempErrors.add(error);
             return this;
         }
 
-        public Builder addError(String field, String error) {
-            if (field == null || field.isBlank()) {
-                throw new ErpImplementationException(EMPTY_FIELD);
+        public Builder addValidation(ValidationError prototype) {
+            if (prototype != null) {
+                this.tempErrors.addAll(prototype.errors());
             }
-            if (error == null || error.isBlank()) {
-                throw new ErpImplementationException(EMPTY_ERROR);
-            }
-            tempErrors.computeIfAbsent(field, _ ->
-                    new ArrayList<>()
-            ).add(error);
             return this;
         }
 

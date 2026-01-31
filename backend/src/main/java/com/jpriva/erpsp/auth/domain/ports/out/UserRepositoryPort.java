@@ -33,4 +33,12 @@ public interface UserRepositoryPort {
      * @return the user with the given email, or empty if not found
      */
     Optional<User> findByEmail(Email email);
+
+    /**
+     * Checks if a user with the given email exists.
+     *
+     * @param email the email address
+     * @return true if a user with the given email exists, false otherwise
+     */
+    boolean existsByEmail(Email email);
 }

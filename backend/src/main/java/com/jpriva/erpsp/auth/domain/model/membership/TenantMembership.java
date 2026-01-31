@@ -1,6 +1,8 @@
 package com.jpriva.erpsp.auth.domain.model.membership;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.TenantMembershipValidationError;
+import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthValidationException;
 import com.jpriva.erpsp.auth.domain.model.role.RoleId;
 import com.jpriva.erpsp.auth.domain.model.role.RoleName;
 import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
@@ -18,7 +20,7 @@ import java.util.UUID;
 
 /**
  * Aggregate root representing a user's membership in a tenant with their assigned roles.
- *
+ * <p>
  * Invariants:
  * - Active membership must have at least one role
  * - No duplicate roles by RoleId
@@ -26,33 +28,14 @@ import java.util.UUID;
  * - Cannot revoke the last role of an active membership (must remove membership instead)
  */
 public class TenantMembership {
-    private static final String MEMBERSHIP_ID_NULL_ERROR = "Membership ID can't be empty";
-    private static final String USER_ID_NULL_ERROR = "User ID can't be empty";
-    private static final String TENANT_ID_NULL_ERROR = "Tenant ID can't be empty";
-    private static final String STATUS_NULL_ERROR = "Status can't be empty";
-    private static final String JOINED_AT_NULL_ERROR = "Joined at can't be empty";
-    private static final String INVITED_BY_NULL_ERROR = "Invited by can't be empty";
-    private static final String ROLES_NULL_ERROR = "Roles can't be null";
-    private static final String ROLES_EMPTY_FOR_ACTIVE_ERROR = "Active membership must have at least one role";
-    private static final String ROLE_ALREADY_ASSIGNED_ERROR = "Role is already assigned to this membership";
-    private static final String ROLE_NOT_ASSIGNED_ERROR = "Role is not assigned to this membership";
-    private static final String CANNOT_REVOKE_LAST_ROLE_ERROR = "Cannot revoke the last role of an active membership";
-
-    private static final String FIELD_MEMBERSHIP_ID = "membershipId";
-    private static final String FIELD_USER_ID = "userId";
-    private static final String FIELD_TENANT_ID = "tenantId";
-    private static final String FIELD_STATUS = "status";
-    private static final String FIELD_JOINED_AT = "joinedAt";
-    private static final String FIELD_INVITED_BY = "invitedBy";
-    private static final String FIELD_ROLES = "roles";
 
     private final TenantMembershipId membershipId;
     private final UserId userId;
     private final TenantId tenantId;
-    private MembershipStatus status;
     private final Instant joinedAt;
     private final UserId invitedBy;
     private final Set<MembershipRole> roles;
+    private MembershipStatus status;
 
     public TenantMembership(
             TenantMembershipId membershipId,
@@ -65,33 +48,27 @@ public class TenantMembership {
     ) {
         var val = new ValidationError.Builder();
         if (membershipId == null) {
-            val.addError(FIELD_MEMBERSHIP_ID, MEMBERSHIP_ID_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.ID_EMPTY);
         }
         if (userId == null) {
-            val.addError(FIELD_USER_ID, USER_ID_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.USER_ID_EMPTY);
         }
         if (tenantId == null) {
-            val.addError(FIELD_TENANT_ID, TENANT_ID_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.TENANT_ID_EMPTY);
         }
         if (status == null) {
-            val.addError(FIELD_STATUS, STATUS_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.STATUS_EMPTY);
         }
         if (joinedAt == null) {
-            val.addError(FIELD_JOINED_AT, JOINED_AT_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.JOINED_AT_EMPTY);
         }
         if (invitedBy == null) {
-            val.addError(FIELD_INVITED_BY, INVITED_BY_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.INVITED_BY_EMPTY);
         }
         if (roles == null) {
-            val.addError(FIELD_ROLES, ROLES_NULL_ERROR);
+            val.addError(TenantMembershipValidationError.ROLES_EMPTY);
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
-
-        // Invariant: active membership must have at least one role
-        if (status == MembershipStatus.ACTIVE && roles.isEmpty()) {
-            val.addError(FIELD_ROLES, ROLES_EMPTY_FOR_ACTIVE_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
-        }
 
         this.membershipId = membershipId;
         this.userId = userId;
@@ -99,6 +76,7 @@ public class TenantMembership {
         this.status = status;
         this.joinedAt = joinedAt;
         this.invitedBy = invitedBy;
+        assert roles != null;
         this.roles = new HashSet<>(roles);
     }
 
@@ -111,11 +89,6 @@ public class TenantMembership {
             Set<MembershipRole> initialRoles,
             UserId invitedBy
     ) {
-        var val = new ValidationError.Builder();
-        if (initialRoles == null || initialRoles.isEmpty()) {
-            val.addError(FIELD_ROLES, ROLES_EMPTY_FOR_ACTIVE_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
-        }
 
         return new TenantMembership(
                 TenantMembershipId.generate(),
@@ -129,7 +102,7 @@ public class TenantMembership {
     }
 
     /**
-     * Factory method to restore membership from persistence layer.
+     * Factory method to restore membership from the persistence layer.
      */
     public static TenantMembership fromPersistence(
             UUID membershipId,
@@ -158,62 +131,58 @@ public class TenantMembership {
     /**
      * Assigns a new role to this membership.
      *
-     * @throws ErpValidationException if role is already assigned
+     * @throws ErpValidationException if a role is already assigned
      */
     public void assignRole(RoleId roleId, RoleName roleName, UserId assignedBy) {
         var val = new ValidationError.Builder();
         if (roleId == null) {
-            val.addError("roleId", "Role ID cannot be null");
+            val.addError(TenantMembershipValidationError.ROLE_ID_EMPTY);
         }
         if (roleName == null) {
-            val.addError("roleName", "Role name cannot be null");
+            val.addError(TenantMembershipValidationError.ROLE_NAME_EMPTY);
         }
         if (assignedBy == null) {
-            val.addError("assignedBy", "Assigned by cannot be null");
+            val.addError(TenantMembershipValidationError.ASSIGNED_BY_EMPTY);
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
-
-        // Check if role is already assigned
         boolean roleExists = roles.stream()
                 .anyMatch(mr -> mr.roleId().equals(roleId));
         if (roleExists) {
-            val.addError(FIELD_ROLES, ROLE_ALREADY_ASSIGNED_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            val.addError(TenantMembershipValidationError.ROLE_ALREADY_ASSIGNED);
         }
+        ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
 
         roles.add(MembershipRole.create(roleId, roleName, assignedBy));
     }
 
     /**
      * Revokes a role from this membership.
-     *
+     * <p>
      * Invariant: Cannot revoke the last role of an active membership.
      *
-     * @throws ErpValidationException if role is not assigned or would violate invariant
+     * @throws ErpValidationException if a role is not assigned or would violate invariant
      */
     public void revokeRole(RoleId roleId) {
         var val = new ValidationError.Builder();
         if (roleId == null) {
-            val.addError("roleId", "Role ID cannot be null");
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            throw new ErpAuthValidationException(
+                    ValidationError.createSingle(TenantMembershipValidationError.ROLE_ID_EMPTY)
+            );
         }
 
-        // Check if role is assigned
         MembershipRole roleToRevoke = roles.stream()
                 .filter(mr -> mr.roleId().equals(roleId))
                 .findFirst()
                 .orElse(null);
 
         if (roleToRevoke == null) {
-            val.addError(FIELD_ROLES, ROLE_NOT_ASSIGNED_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            val.addError(TenantMembershipValidationError.ROLE_NOT_ASSIGNED);
         }
 
-        // Invariant: cannot revoke last role of active membership
         if (status == MembershipStatus.ACTIVE && roles.size() == 1) {
-            val.addError(FIELD_ROLES, CANNOT_REVOKE_LAST_ROLE_ERROR);
-            ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+            val.addError(TenantMembershipValidationError.CANNOT_REVOKE_LAST_ROLE);
         }
+        ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
 
         roles.remove(roleToRevoke);
     }
@@ -236,7 +205,7 @@ public class TenantMembership {
     }
 
     /**
-     * Checks if this membership has all of the provided roles.
+     * Checks if this membership has all the provided roles.
      */
     public boolean hasAllRoles(Set<RoleId> roleIds) {
         Set<RoleId> memberRoleIds = roles.stream()

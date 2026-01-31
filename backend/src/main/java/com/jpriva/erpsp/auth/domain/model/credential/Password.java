@@ -1,6 +1,8 @@
 package com.jpriva.erpsp.auth.domain.model.credential;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.CredentialValidationError;
+import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthValidationException;
 import com.jpriva.erpsp.auth.domain.ports.out.PasswordHasherPort;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
 import com.jpriva.erpsp.shared.domain.model.ValidationError;
@@ -10,19 +12,14 @@ import com.jpriva.erpsp.shared.domain.model.ValidationError;
  * The raw password is never stored; only the hash is persisted.
  */
 public record Password(String hash) {
-    private static final String FIELD_NAME = "password";
-    private static final String HASH_EMPTY_ERROR = "Password hash can't be empty";
-    private static final String RAW_EMPTY_ERROR = "Password can't be empty";
     private static final int MIN_LENGTH = 8;
-    private static final int MAX_LENGTH = 128;
-    private static final String LENGTH_ERROR = "Password must be between " + MIN_LENGTH + " and " + MAX_LENGTH + " characters";
+    private static final int MAX_LENGTH = 40;
 
     public Password {
         var val = ValidationError.builder();
         if (hash == null || hash.isBlank()) {
-            throw new ErpValidationException(
-                    AuthErrorCode.AUTH_MODULE,
-                    val.addError(FIELD_NAME, HASH_EMPTY_ERROR).build()
+            throw new ErpAuthValidationException(
+                    val.addError(CredentialValidationError.PASSWORD_EMPTY).build()
             );
         }
     }
@@ -37,15 +34,14 @@ public record Password(String hash) {
     public static Password create(String rawPassword, PasswordHasherPort hasher) {
         var val = ValidationError.builder();
         if (rawPassword == null || rawPassword.isBlank()) {
-            throw new ErpValidationException(
-                    AuthErrorCode.AUTH_MODULE,
-                    val.addError(FIELD_NAME, RAW_EMPTY_ERROR).build()
+            throw new ErpAuthValidationException(
+                    val.addError(CredentialValidationError.PASSWORD_EMPTY).build()
             );
         }
         if (rawPassword.length() < MIN_LENGTH || rawPassword.length() > MAX_LENGTH) {
             throw new ErpValidationException(
                     AuthErrorCode.AUTH_MODULE,
-                    val.addError(FIELD_NAME, LENGTH_ERROR).build()
+                    val.addError(CredentialValidationError.PASSWORD_LENGTH_INVALID).build()
             );
         }
         return new Password(hasher.encode(rawPassword));

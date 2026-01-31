@@ -1,7 +1,7 @@
 package com.jpriva.erpsp.auth.domain.model.membership;
 
-import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
-import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
+import com.jpriva.erpsp.auth.domain.constants.TenantMembershipValidationError;
+import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthValidationException;
 import com.jpriva.erpsp.shared.domain.model.ValidationError;
 
 public enum MembershipStatus {
@@ -9,25 +9,19 @@ public enum MembershipStatus {
     SUSPENDED,
     REMOVED;
 
-    private static final String STATUS_NULL_ERROR = "Status can't be empty";
-    private static final String STATUS_NOT_FOUND_ERROR = "Status doesn't exist";
-    private static final String FIELD_STATUS = "membershipStatus";
 
     public static MembershipStatus of(String status) {
-        var val = new ValidationError.Builder();
         if (status == null || status.isBlank()) {
-            throw new ErpValidationException(
-                    AuthErrorCode.AUTH_MODULE,
-                    val.addError(FIELD_STATUS, STATUS_NULL_ERROR).build()
+            throw new ErpAuthValidationException(
+                    ValidationError.createSingle(TenantMembershipValidationError.STATUS_EMPTY)
             );
         }
         MembershipStatus membershipStatus;
         try {
             membershipStatus = MembershipStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ErpValidationException(
-                    AuthErrorCode.AUTH_MODULE,
-                    val.addError(FIELD_STATUS, STATUS_NOT_FOUND_ERROR).build()
+            throw new ErpAuthValidationException(
+                    ValidationError.createSingle(TenantMembershipValidationError.STATUS_NOT_FOUND)
             );
         }
         return membershipStatus;
