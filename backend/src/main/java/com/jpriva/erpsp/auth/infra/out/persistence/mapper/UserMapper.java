@@ -38,7 +38,8 @@ public class UserMapper {
                 entity.getEmail(),
                 entity.getFirstName(),
                 entity.getLastName(),
-                entity.getStatus()
+                entity.getStatus(),
+                entity.getCreatedAt()
         );
     }
 }

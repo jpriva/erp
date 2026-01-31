@@ -2,6 +2,7 @@ package com.jpriva.erpsp.shared.domain.model;
 
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
 import com.jpriva.erpsp.shared.domain.utils.ErpExceptionTestUtils;
+import com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 public class PersonNameTest {
 
@@ -64,8 +66,7 @@ public class PersonNameTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("firstName");
+                        assertHasFieldError(ex, "firstName");
                     });
         }
 
@@ -77,8 +78,7 @@ public class PersonNameTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("lastName");
+                        assertHasFieldError(ex, "lastName");
                     });
         }
     }
@@ -92,8 +92,7 @@ public class PersonNameTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("firstName");
+                        assertHasFieldError(ex, "firstName");
                     });
         }
 
@@ -104,8 +103,7 @@ public class PersonNameTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("lastName");
+                        assertHasFieldError(ex, "lastName");
                     });
         }
 
@@ -116,8 +114,7 @@ public class PersonNameTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("firstName");
+                        assertHasFieldError(ex, "firstName");
                     });
         }
 
@@ -128,8 +125,7 @@ public class PersonNameTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("lastName");
+                        assertHasFieldError(ex, "lastName");
                     });
         }
     }

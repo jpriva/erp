@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class OpenIdProviderTest {
 
@@ -27,8 +28,7 @@ class OpenIdProviderTest {
                 .satisfies(exception -> {
                     ErpValidationException ex = (ErpValidationException) exception;
                     ErpExceptionTestUtils.printExceptionDetails(ex);
-                    assertThat(ex.getPlainErrors())
-                            .containsKey("openIdProvider");
+                    assertHasFieldError(ex, "openIdProvider");
                 });
     }
 }

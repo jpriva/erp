@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class PasswordTest {
 
@@ -82,8 +83,7 @@ class PasswordTest {
                         ErpExceptionTestUtils.printExceptionDetails(ex);
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
 
@@ -97,8 +97,7 @@ class PasswordTest {
                         ErpExceptionTestUtils.printExceptionDetails(ex);
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
 
@@ -112,8 +111,7 @@ class PasswordTest {
                         ErpExceptionTestUtils.printExceptionDetails(ex);
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
 
@@ -127,8 +125,7 @@ class PasswordTest {
                         ErpExceptionTestUtils.printExceptionDetails(ex);
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
     }

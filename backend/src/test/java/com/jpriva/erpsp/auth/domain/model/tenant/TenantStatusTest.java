@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class TenantStatusTest {
 
@@ -27,8 +28,7 @@ class TenantStatusTest {
                 .satisfies(exception -> {
                     ErpValidationException ex = (ErpValidationException) exception;
                     ErpExceptionTestUtils.printExceptionDetails(ex);
-                    assertThat(ex.getPlainErrors())
-                            .containsKey("status");
+                    assertHasFieldError(ex, "status");
                 });
     }
 }

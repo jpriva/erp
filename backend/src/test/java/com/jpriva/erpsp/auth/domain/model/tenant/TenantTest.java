@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class TenantTest {
 
@@ -52,8 +53,7 @@ class TenantTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("tenantId");
+                        assertHasFieldError(ex, "tenantId");
                     });
         }
 
@@ -70,8 +70,7 @@ class TenantTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("ownerId");
+                        assertHasFieldError(ex, "ownerId");
                     });
         }
 
@@ -88,8 +87,7 @@ class TenantTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("name");
+                        assertHasFieldError(ex, "name");
                     });
         }
 
@@ -106,8 +104,7 @@ class TenantTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("status");
+                        assertHasFieldError(ex, "status");
                     });
         }
 
@@ -124,8 +121,7 @@ class TenantTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("createdAt");
+                        assertHasFieldError(ex, "createdAt");
                     });
         }
     }
@@ -153,8 +149,7 @@ class TenantTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("tenantName");
+                        assertHasFieldError(ex, "name");
                     });
         }
     }
