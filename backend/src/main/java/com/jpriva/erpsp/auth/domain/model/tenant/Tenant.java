@@ -55,7 +55,7 @@ public class Tenant {
             val.addValidation(ex.getValidationErrors());
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
-        return new Tenant(tenantId, ownerId, tenantName, TenantStatus.ACTIVE, null);
+        return new Tenant(tenantId, ownerId, tenantName, TenantStatus.ACTIVE, Instant.now());
     }
 
     public static Tenant fromPersistence(UUID tenantId, UUID ownerId, String name, String status, Instant createdAt) {

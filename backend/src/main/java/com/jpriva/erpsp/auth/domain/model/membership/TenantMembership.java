@@ -65,7 +65,7 @@ public class TenantMembership {
         if (invitedBy == null) {
             val.addError(TenantMembershipValidationError.INVITED_BY_EMPTY);
         }
-        if (roles == null) {
+        if (roles == null || roles.isEmpty()) {
             val.addError(TenantMembershipValidationError.ROLES_EMPTY);
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);

@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.UUID;
 
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class OpenIdCredentialTest {
 
@@ -55,7 +55,7 @@ class OpenIdCredentialTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertHasFieldError(ex, "provider");
+                        assertHasFieldError(ex, "openIdProvider");
                     });
         }
 
@@ -79,7 +79,7 @@ class OpenIdCredentialTest {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
                         assertHasFieldError(ex, "userId");
-                        assertHasFieldError(ex, "provider");
+                        assertHasFieldError(ex, "openIdProvider");
                         assertHasFieldError(ex, "openIdSubject");
                     });
         }
