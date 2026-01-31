@@ -1,7 +1,7 @@
 package com.jpriva.erpsp.auth.application.usecases;
 
 import com.jpriva.erpsp.auth.application.dto.RegisterUserCommand;
-import com.jpriva.erpsp.auth.application.dto.UserResponse;
+import com.jpriva.erpsp.auth.application.dto.UserView;
 import com.jpriva.erpsp.auth.domain.model.credential.Credential;
 import com.jpriva.erpsp.auth.domain.model.user.User;
 import com.jpriva.erpsp.auth.domain.model.utils.FakeLogger;
@@ -51,7 +51,7 @@ class RegisterLocalUserUseCaseTest {
         String password = "password";
         RegisterUserCommand newUser = new RegisterUserCommand(email, firstName, lastName);
 
-        UserResponse response = useCase.execute(newUser, password);
+        UserView response = useCase.execute(newUser, password);
 
         assertThat(response).isNotNull();
         assertThat(response.id()).isNotNull();

@@ -1,6 +1,6 @@
 package com.jpriva.erpsp.auth.infra.in.rest.dto;
 
-import com.jpriva.erpsp.auth.application.dto.UserResponse;
+import com.jpriva.erpsp.auth.application.dto.UserView;
 
 public record UserResponseDto(
         String id,
@@ -8,7 +8,7 @@ public record UserResponseDto(
         String name,
         String status
 ) {
-    public static UserResponseDto from(UserResponse user) {
+    public static UserResponseDto from(UserView user) {
         return new UserResponseDto(
                 user.id(),
                 user.email(),

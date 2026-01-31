@@ -47,11 +47,10 @@ public class CredentialRepositoryAdapter implements CredentialRepositoryPort {
     }
 
     @Override
-    public List<Credential> findByUserIdAndType(UserId userId, CredentialType type) {
-        return jpaRepository.findByUserIdAndType(userId.value(), type.toString())
-                .stream()
-                .map(CredentialMapper::entityToDomain)
-                .collect(Collectors.toList());
+    public Optional<Credential> findPasswordByUserId(UserId userId) {
+        Optional<CredentialEntity> credential = Optional.of(jpaRepository.findByUserIdAndType(userId.value(), CredentialType.PASSWORD.toString())
+                .getFirst());
+        return credential.map(CredentialMapper::entityToDomain);
     }
 
     @Override

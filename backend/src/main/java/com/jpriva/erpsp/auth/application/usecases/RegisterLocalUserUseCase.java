@@ -1,7 +1,7 @@
 package com.jpriva.erpsp.auth.application.usecases;
 
 import com.jpriva.erpsp.auth.application.dto.RegisterUserCommand;
-import com.jpriva.erpsp.auth.application.dto.UserResponse;
+import com.jpriva.erpsp.auth.application.dto.UserView;
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthException;
 import com.jpriva.erpsp.auth.domain.model.credential.PasswordCredential;
@@ -31,7 +31,7 @@ public class RegisterLocalUserUseCase {
         this.passwordHasher = passwordHasher;
     }
 
-    public UserResponse execute(RegisterUserCommand cmd, String rawPassword) {
+    public UserView execute(RegisterUserCommand cmd, String rawPassword) {
         log.debug("Registering user: {}", cmd.email());
         try {
             return transactional.execute(() -> {
@@ -46,7 +46,7 @@ public class RegisterLocalUserUseCase {
                 PasswordCredential credential = PasswordCredential.create(user.getUserId(), rawPassword, passwordHasher);
                 credentialRepository.save(credential);
                 log.debug("Password credential created for user: {}", email.toString());
-                return UserResponse.from(user);
+                return UserView.from(user);
             });
         } catch (Exception e) {
             log.error("Error registering user: {}", cmd.email(), e);

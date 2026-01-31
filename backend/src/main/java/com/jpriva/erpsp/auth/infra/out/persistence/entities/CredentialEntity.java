@@ -18,11 +18,16 @@ import java.util.UUID;
  * - OPENID: OpenID Connect / OAuth2 authentication (has provider and subject)
  */
 @Entity
-@Table(name = "credentials", schema = "auth", indexes = {
-        @Index(name = "idx_credential_user_id", columnList = "user_id"),
-        @Index(name = "idx_credential_status", columnList = "status"),
-        @Index(name = "idx_credential_type", columnList = "type")
-})
+@Table(name = "credentials", schema = "auth",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_credential_user_type", columnNames = {"user_id", "type", "provider", "subject"})
+        },
+        indexes = {
+                @Index(name = "idx_credential_user_id", columnList = "user_id"),
+                @Index(name = "idx_credential_status", columnList = "status"),
+                @Index(name = "idx_credential_type", columnList = "type")
+        })
+
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING, length = 20)
 @Data

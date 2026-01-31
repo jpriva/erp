@@ -53,7 +53,7 @@ CREATE TABLE auth.credentials
     provider      VARCHAR(50),
     subject       VARCHAR(255),
 
-    CONSTRAINT uk_openid_provider_subject UNIQUE (provider, subject)
+    CONSTRAINT uk_openid_type_user_id_provider_subject UNIQUE (type, user_id, provider, subject)
 );
 
 CREATE INDEX idx_credential_user_id ON auth.credentials (user_id);
