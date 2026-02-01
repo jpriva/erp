@@ -1,6 +1,8 @@
 package com.jpriva.erpsp.auth.domain.model.tenant;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.TenantValidationError;
+import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthValidationException;
 import com.jpriva.erpsp.auth.domain.model.user.UserId;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
@@ -11,39 +13,29 @@ import java.time.Instant;
 import java.util.UUID;
 
 public class Tenant {
-    private static final String TENANT_ID_NULL_ERROR = "Tenant ID can't be empty";
-    private static final String OWNER_ID_NULL_ERROR = "Owner ID can't be empty";
-    private static final String NAME_NULL_ERROR = "Name can't be empty";
-    private static final String STATUS_NULL_ERROR = "Status can't be empty";
-    private static final String CREATED_AT_NULL_ERROR = "Created at can't be empty";
-    private static final String FIELD_TENANT_ID = "tenantId";
-    private static final String FIELD_OWNER_ID = "ownerId";
-    private static final String FIELD_NAME = "name";
-    private static final String FIELD_STATUS = "status";
-    private static final String FIELD_CREATED_AT = "createdAt";
 
     private final TenantId tenantId;
-    private final UserId ownerId;
+    private final Instant createdAt;
+    private UserId ownerId;
     private TenantName name;
     private TenantStatus status;
-    private final Instant createdAt;
 
     public Tenant(TenantId tenantId, UserId ownerId, TenantName name, TenantStatus status, Instant createdAt) {
         var val = new ValidationError.Builder();
         if (tenantId == null) {
-            val.addError(FIELD_TENANT_ID, TENANT_ID_NULL_ERROR);
+            val.addError(TenantValidationError.ID_EMPTY);
         }
         if (ownerId == null) {
-            val.addError(FIELD_OWNER_ID, OWNER_ID_NULL_ERROR);
+            val.addError(TenantValidationError.OWNER_ID_EMPTY);
         }
         if (name == null) {
-            val.addError(FIELD_NAME, NAME_NULL_ERROR);
+            val.addError(TenantValidationError.NAME_EMPTY);
         }
         if (status == null) {
-            val.addError(FIELD_STATUS, STATUS_NULL_ERROR);
+            val.addError(TenantValidationError.STATUS_EMPTY);
         }
         if (createdAt == null) {
-            val.addError(FIELD_CREATED_AT, CREATED_AT_NULL_ERROR);
+            val.addError(TenantValidationError.CREATED_AT_EMPTY);
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
         this.tenantId = tenantId;
@@ -97,6 +89,14 @@ public class Tenant {
 
     public void markAsDeleted() {
         this.status = TenantStatus.DELETED;
+    }
+
+    public void transferOwnership(UserId newOwnerId) {
+        var val = new ValidationError.Builder();
+        if (newOwnerId == null) {
+            throw new ErpAuthValidationException(val.addError(TenantValidationError.ID_EMPTY).build());
+        }
+        this.ownerId = newOwnerId;
     }
 
     public boolean isActive() {

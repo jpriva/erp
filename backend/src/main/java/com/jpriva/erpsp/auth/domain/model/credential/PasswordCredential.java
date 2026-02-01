@@ -1,6 +1,7 @@
 package com.jpriva.erpsp.auth.domain.model.credential;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.CredentialValidationError;
 import com.jpriva.erpsp.auth.domain.model.user.UserId;
 import com.jpriva.erpsp.auth.domain.ports.out.PasswordHasherPort;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
@@ -15,10 +16,6 @@ import java.util.UUID;
  * Credential type for local password-based authentication.
  */
 public final class PasswordCredential extends Credential {
-    private static final String FIELD_PASSWORD = "password";
-    private static final String PASSWORD_NULL_ERROR = "Password can't be empty";
-    private static final String FIELD_USER_ID = "userId";
-    private static final String USER_ID_NULL_ERROR = "User ID can't be empty";
 
     private Password password;
 
@@ -45,7 +42,7 @@ public final class PasswordCredential extends Credential {
     public static PasswordCredential create(UserId userId, String rawPassword, PasswordHasherPort hasher) {
         var val = new ValidationError.Builder();
         if (userId == null) {
-            val.addError(FIELD_USER_ID, USER_ID_NULL_ERROR);
+            val.addError(CredentialValidationError.USER_ID_EMPTY);
         }
         Password password = null;
         try {

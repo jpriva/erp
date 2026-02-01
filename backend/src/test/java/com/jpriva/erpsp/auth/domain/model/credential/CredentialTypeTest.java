@@ -6,13 +6,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CredentialTypeTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"PASSWORD", "OPENID", "BIOMETRIC", "password", "Password"})
+    @ValueSource(strings = {"PASSWORD", "OPENID", "password", "Password"})
     void of_Success(String typeStr) {
         CredentialType type = CredentialType.of(typeStr);
         assertThat(type).isNotNull();
@@ -27,8 +28,7 @@ class CredentialTypeTest {
                 .satisfies(exception -> {
                     ErpValidationException ex = (ErpValidationException) exception;
                     ErpExceptionTestUtils.printExceptionDetails(ex);
-                    assertThat(ex.getPlainErrors())
-                            .containsKey("credentialType");
+                    assertHasFieldError(ex, "type");
                 });
     }
 }

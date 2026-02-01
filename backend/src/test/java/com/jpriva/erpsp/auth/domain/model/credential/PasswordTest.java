@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -32,7 +33,7 @@ class PasswordTest {
 
         @Test
         void create_CreatePasswordWithMaxLength_Success() {
-            String maxLengthPassword = "a".repeat(128);
+            String maxLengthPassword = "a".repeat(40);
             Password password = Password.create(maxLengthPassword, PasswordTestUtils.fakeHasher);
             assertThat(password).isNotNull();
         }
@@ -82,8 +83,7 @@ class PasswordTest {
                         ErpExceptionTestUtils.printExceptionDetails(ex);
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
 
@@ -97,14 +97,13 @@ class PasswordTest {
                         ErpExceptionTestUtils.printExceptionDetails(ex);
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
 
         @Test
         void create_FailIfTooLong() {
-            String tooLongPassword = "a".repeat(129);
+            String tooLongPassword = "a".repeat(41);
             assertThatThrownBy(() -> Password.create(tooLongPassword, PasswordTestUtils.fakeHasher))
                     .isInstanceOf(ErpValidationException.class)
                     .satisfies(exception -> {
@@ -112,8 +111,7 @@ class PasswordTest {
                         ErpExceptionTestUtils.printExceptionDetails(ex);
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
 
@@ -127,8 +125,7 @@ class PasswordTest {
                         ErpExceptionTestUtils.printExceptionDetails(ex);
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
     }

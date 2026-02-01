@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class TenantNameTest {
 
@@ -63,8 +64,7 @@ class TenantNameTest {
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode()).isNotNull();
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("tenantName");
+                        assertHasFieldError(ex, "name");
                     });
         }
 
@@ -79,8 +79,7 @@ class TenantNameTest {
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode()).isNotNull();
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("tenantName");
+                        assertHasFieldError(ex, "name");
                     });
         }
     }

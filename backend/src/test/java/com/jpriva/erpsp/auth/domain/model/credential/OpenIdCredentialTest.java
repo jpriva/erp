@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.UUID;
 
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -42,8 +43,7 @@ class OpenIdCredentialTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("userId");
+                        assertHasFieldError(ex, "userId");
                     });
         }
 
@@ -55,8 +55,7 @@ class OpenIdCredentialTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("provider");
+                        assertHasFieldError(ex, "openIdProvider");
                     });
         }
 
@@ -68,8 +67,7 @@ class OpenIdCredentialTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("openIdSubject");
+                        assertHasFieldError(ex, "openIdSubject");
                     });
         }
 
@@ -80,10 +78,9 @@ class OpenIdCredentialTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("userId")
-                                .containsKey("provider")
-                                .containsKey("openIdSubject");
+                        assertHasFieldError(ex, "userId");
+                        assertHasFieldError(ex, "openIdProvider");
+                        assertHasFieldError(ex, "openIdSubject");
                     });
         }
     }
