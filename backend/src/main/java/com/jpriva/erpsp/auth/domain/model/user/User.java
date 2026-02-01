@@ -1,6 +1,7 @@
 package com.jpriva.erpsp.auth.domain.model.user;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
+import com.jpriva.erpsp.auth.domain.constants.UserValidationError;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
 import com.jpriva.erpsp.shared.domain.model.Email;
@@ -8,35 +9,32 @@ import com.jpriva.erpsp.shared.domain.model.PersonName;
 import com.jpriva.erpsp.shared.domain.model.ValidationError;
 import com.jpriva.erpsp.shared.domain.utils.ValidationErrorUtils;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class User {
-    private static final String USER_ID_NULL_ERROR = "User ID can't be empty";
-    private static final String EMAIL_NULL_ERROR = "Email can't be empty";
-    private static final String NAME_NULL_ERROR = "Name can't be empty";
-    private static final String STATUS_NULL_ERROR = "Status can't be empty";
-    private static final String FIELD_USER_ID = "userId";
-    private static final String FIELD_EMAIL = "email";
-    private static final String FIELD_NAME = "name";
-    private static final String FIELD_STATUS = "status";
     private final UserId userId;
     private Email email;
     private PersonName name;
     private UserStatus status;
+    private Instant createdAt;
 
-    public User(UserId userId, Email email, PersonName name, UserStatus status) {
+    public User(UserId userId, Email email, PersonName name, UserStatus status, Instant createdAt) {
         var val = new ValidationError.Builder();
         if (userId == null) {
-            val.addError(FIELD_USER_ID, USER_ID_NULL_ERROR);
+            val.addError(UserValidationError.ID_EMPTY);
         }
         if (email == null) {
-            val.addError(FIELD_EMAIL, EMAIL_NULL_ERROR);
+            val.addError(UserValidationError.EMAIL_EMPTY);
         }
         if (name == null) {
-            val.addError(FIELD_NAME, NAME_NULL_ERROR);
+            val.addError(UserValidationError.NAME_EMPTY);
         }
         if (status == null) {
-            val.addError(FIELD_STATUS, STATUS_NULL_ERROR);
+            val.addError(UserValidationError.STATUS_EMPTY);
+        }
+        if (createdAt == null) {
+            val.addError(UserValidationError.CREATED_AT_EMPTY);
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
         this.userId = userId;
@@ -63,14 +61,14 @@ public class User {
         }
 
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
-        return new User(userId, email, name, UserStatus.EMAIL_NOT_VERIFIED);
+        return new User(userId, email, name, UserStatus.EMAIL_NOT_VERIFIED, Instant.now());
     }
 
-    public static User fromPersistence(UUID uuid, String mail, String firstName, String lastName, String status) {
+    public static User fromPersistence(UUID uuid, String mail, String firstName, String lastName, String status, Instant createdAt) {
         User user;
         try {
             UserStatus userStatus = UserStatus.of(status);
-            user = new User(new UserId(uuid), new Email(mail), new PersonName(firstName, lastName), userStatus);
+            user = new User(new UserId(uuid), new Email(mail), new PersonName(firstName, lastName), userStatus, createdAt);
         } catch (ErpValidationException ex) {
             throw new ErpPersistenceCompromisedException(AuthErrorCode.AUTH_MODULE, ex);
         }
@@ -78,9 +76,23 @@ public class User {
     }
 
     public void changeData(String emailStr, String firstName, String lastName) {
-        changeEmail(emailStr);
-        changeFirstName(firstName);
-        changeLastName(lastName);
+        var val = new ValidationError.Builder();
+        try {
+            changeEmail(emailStr);
+        } catch (ErpValidationException ex) {
+            val.addValidation(ex.getValidationErrors());
+        }
+        try {
+            changeFirstName(firstName);
+        } catch (ErpValidationException ex) {
+            val.addValidation(ex.getValidationErrors());
+        }
+        try {
+            changeLastName(lastName);
+        } catch (ErpValidationException ex) {
+            val.addValidation(ex.getValidationErrors());
+        }
+        ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
     }
 
     public void changeEmail(String emailStr) {

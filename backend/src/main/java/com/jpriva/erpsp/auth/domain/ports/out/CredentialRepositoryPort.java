@@ -2,7 +2,6 @@ package com.jpriva.erpsp.auth.domain.ports.out;
 
 import com.jpriva.erpsp.auth.domain.model.credential.Credential;
 import com.jpriva.erpsp.auth.domain.model.credential.CredentialId;
-import com.jpriva.erpsp.auth.domain.model.credential.CredentialType;
 import com.jpriva.erpsp.auth.domain.model.user.UserId;
 
 import java.util.List;
@@ -37,13 +36,12 @@ public interface CredentialRepositoryPort {
     List<Credential> findByUserId(UserId userId);
 
     /**
-     * Finds all credentials for a user of a specific type.
+     * Finds all credentials for a user of a PASSWORD type.
      *
      * @param userId the user ID
-     * @param type   the credential type
-     * @return list of credentials for the user of the specified type
+     * @return optional of credential for the user with type PASSWORD.
      */
-    List<Credential> findByUserIdAndType(UserId userId, CredentialType type);
+    Optional<Credential> findPasswordByUserId(UserId userId);
 
     /**
      * Deletes a credential by its ID.

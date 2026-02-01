@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class PasswordCredentialTest {
 
@@ -42,8 +43,7 @@ class PasswordCredentialTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("userId");
+                        assertHasFieldError(ex, "userId");
                     });
         }
 
@@ -55,8 +55,7 @@ class PasswordCredentialTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
 
@@ -67,9 +66,8 @@ class PasswordCredentialTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("userId")
-                                .containsKey("password");
+                        assertHasFieldError(ex, "userId");
+                        assertHasFieldError(ex, "password");
                     });
         }
     }
@@ -171,8 +169,7 @@ class PasswordCredentialTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("password");
+                        assertHasFieldError(ex, "password");
                     });
         }
     }

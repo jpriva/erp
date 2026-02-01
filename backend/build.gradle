@@ -27,12 +27,12 @@ repositories {
 }
 
 dependencies {
-    implementation platform(libs.spring.dotenv.bom)
     implementation platform(libs.spring.modulith.bom)
 
     implementation libs.bundles.web.stack
     implementation libs.bundles.database
     implementation libs.bundles.modulith
+    implementation libs.bundles.jwt
     compileOnly libs.lombok
     annotationProcessor libs.lombok
     developmentOnly libs.bundles.development

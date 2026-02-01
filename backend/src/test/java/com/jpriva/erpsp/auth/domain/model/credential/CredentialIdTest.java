@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class CredentialIdTest {
 
@@ -60,8 +61,7 @@ class CredentialIdTest {
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode()).isNotNull();
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("credentialId");
+                        assertHasFieldError(ex, "credentialId");
                     });
         }
 
@@ -76,8 +76,7 @@ class CredentialIdTest {
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode()).isNotNull();
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("credentialId");
+                        assertHasFieldError(ex, "credentialId");
                     });
         }
 
@@ -91,8 +90,7 @@ class CredentialIdTest {
                         assertThat(ex.getModule()).isEqualTo("AUTH");
                         assertThat(ex.getCode()).isNotNull();
                         assertThat(ex.getCode().getCode()).isEqualTo("VALIDATION_ERROR");
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("credentialId");
+                        assertHasFieldError(ex, "credentialId");
                     });
         }
     }

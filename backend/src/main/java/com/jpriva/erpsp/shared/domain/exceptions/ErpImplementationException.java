@@ -1,10 +1,11 @@
 package com.jpriva.erpsp.shared.domain.exceptions;
 
 public class ErpImplementationException extends ErpException {
-    public ErpImplementationException(String message) {
-        super(ErpErrorCodes.SHARED_MODULE, ErpErrorCodes.IMPLEMENTATION_ERROR, message);
+    public ErpImplementationException(Object... args) {
+        super(ErpErrorCodes.SHARED_MODULE, ErpErrorCodes.IMPLEMENTATION_ERROR, args);
     }
-    public ErpImplementationException(String message, Throwable cause) {
-        super(ErpErrorCodes.SHARED_MODULE, ErpErrorCodes.IMPLEMENTATION_ERROR, message, cause);
+
+    public ErpImplementationException(Throwable cause, Object... args) {
+        super(ErpErrorCodes.SHARED_MODULE, ErpErrorCodes.IMPLEMENTATION_ERROR, cause, args);
     }
 }

@@ -11,10 +11,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class UserTest {
 
@@ -23,7 +25,8 @@ class UserTest {
         @Test
         void constructor_Success() {
             UUID uuid = UUID.randomUUID();
-            User user = new User(new UserId(uuid), new Email("test@example.com"), new PersonName("John", "Doe"), UserStatus.ACTIVE);
+            Instant createdAt = Instant.now();
+            User user = new User(new UserId(uuid), new Email("test@example.com"), new PersonName("John", "Doe"), UserStatus.ACTIVE, createdAt);
             assertThat(user).isNotNull();
             assertThat(user.getUserId()).isNotNull();
             assertThat(user.getEmail()).isNotNull();
@@ -36,37 +39,34 @@ class UserTest {
 
         @Test
         void constructor_ShouldFailForUserIdNull() {
-            assertThatThrownBy(() -> new User(null, new Email("test@example.com"), new PersonName("John", "Doe"), UserStatus.ACTIVE))
+            assertThatThrownBy(() -> new User(null, new Email("test@example.com"), new PersonName("John", "Doe"), UserStatus.ACTIVE, Instant.now()))
                     .isInstanceOf(ErpValidationException.class)
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("userId");
+                        assertHasFieldError(ex, "userId");
                     });
         }
 
         @Test
         void constructor_ShouldFailForEmailNull() {
-            assertThatThrownBy(() -> new User(UserId.generate(), null, new PersonName("John", "Doe"), UserStatus.ACTIVE))
+            assertThatThrownBy(() -> new User(UserId.generate(), null, new PersonName("John", "Doe"), UserStatus.ACTIVE, Instant.now()))
                     .isInstanceOf(ErpValidationException.class)
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("email");
+                        assertHasFieldError(ex, "email");
                     });
         }
 
         @Test
         void constructor_ShouldFailForNameNull() {
-            assertThatThrownBy(() -> new User(UserId.generate(), new Email("test@example.com"), null, UserStatus.ACTIVE))
+            assertThatThrownBy(() -> new User(UserId.generate(), new Email("test@example.com"), null, UserStatus.ACTIVE, Instant.now()))
                     .isInstanceOf(ErpValidationException.class)
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("name");
+                        assertHasFieldError(ex, "name");
                     });
         }
     }
@@ -95,8 +95,7 @@ class UserTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("email");
+                        assertHasFieldError(ex, "email");
                     });
         }
 
@@ -109,8 +108,7 @@ class UserTest {
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
                         ErpExceptionTestUtils.printExceptionDetails(ex);
-                        assertThat(ex.getPlainErrors())
-                                .containsKey("firstName");
+                        assertHasFieldError(ex, "firstName");
                     });
         }
     }
@@ -121,7 +119,8 @@ class UserTest {
         @Test
         void fromPersistence_Success() {
             UUID uuid = UUID.randomUUID();
-            User user = User.fromPersistence(uuid, "test@example.com", "John", "Doe", "ACTIVE");
+            Instant createdAt = Instant.now();
+            User user = User.fromPersistence(uuid, "test@example.com", "John", "Doe", "ACTIVE", createdAt);
             assertThat(user).isNotNull();
             assertThat(user.getUserId()).isNotNull();
             assertThat(user.getEmail()).isNotNull();
@@ -135,7 +134,7 @@ class UserTest {
 
         @Test
         void fromPersistence_ShouldThrowPersistenceCompromisedExceptionIfDoesntMatchDomain() {
-            assertThatThrownBy(() -> User.fromPersistence(UUID.randomUUID(), null, "John", "Doe", "ACTIVE"))
+            assertThatThrownBy(() -> User.fromPersistence(UUID.randomUUID(), null, "John", "Doe", "ACTIVE", Instant.now()))
                     .isInstanceOf(ErpPersistenceCompromisedException.class)
                     .satisfies(exception -> {
                         ErpPersistenceCompromisedException ex = (ErpPersistenceCompromisedException) exception;
