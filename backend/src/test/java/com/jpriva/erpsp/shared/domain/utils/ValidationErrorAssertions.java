@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ValidationErrorAssertions {
 
     private ValidationErrorAssertions() {
-        // Utility class, no instantiation
     }
 
     /**

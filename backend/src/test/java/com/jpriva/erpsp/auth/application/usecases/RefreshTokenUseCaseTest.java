@@ -4,10 +4,10 @@ import com.jpriva.erpsp.auth.application.dto.TokenView;
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthException;
 import com.jpriva.erpsp.auth.domain.model.user.User;
-import com.jpriva.erpsp.auth.domain.model.utils.FakeTokenHandler;
-import com.jpriva.erpsp.auth.domain.model.utils.FakeTransactional;
-import com.jpriva.erpsp.auth.domain.ports.out.TransactionalPort;
 import com.jpriva.erpsp.auth.domain.ports.out.UserRepositoryPort;
+import com.jpriva.erpsp.shared.domain.ports.out.TransactionalPort;
+import com.jpriva.erpsp.utils.FakeTokenHandler;
+import com.jpriva.erpsp.utils.FakeTransactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ class RefreshTokenUseCaseTest {
     @Test
     void shouldRefreshTokenSuccessfully() {
         User user = User.create("test@example.com", "John", "Doe");
-        String refreshToken = tokenHandler.generateTokens(user).refreshToken();
+        String refreshToken = tokenHandler.generateTokens(user.getUserId(), user.getEmail()).refreshToken();
 
         when(userRepository.findById(user.getUserId())).thenReturn(Optional.of(user));
 
@@ -64,7 +64,7 @@ class RefreshTokenUseCaseTest {
     @Test
     void shouldFailWhenUsingAccessTokenAsRefresh() {
         User user = User.create("test@example.com", "John", "Doe");
-        String accessToken = tokenHandler.generateAccessToken(user);
+        String accessToken = tokenHandler.generateAccessToken(user.getUserId(), user.getEmail());
 
         assertThatThrownBy(() -> useCase.execute(accessToken))
                 .isInstanceOf(ErpAuthException.class)
@@ -77,7 +77,7 @@ class RefreshTokenUseCaseTest {
     @Test
     void shouldFailWhenUserNotFound() {
         User user = User.create("test@example.com", "John", "Doe");
-        String refreshToken = tokenHandler.generateTokens(user).refreshToken();
+        String refreshToken = tokenHandler.generateTokens(user.getUserId(), user.getEmail()).refreshToken();
 
         when(userRepository.findById(user.getUserId())).thenReturn(Optional.empty());
 

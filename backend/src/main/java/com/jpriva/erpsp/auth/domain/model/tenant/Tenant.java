@@ -3,9 +3,11 @@ package com.jpriva.erpsp.auth.domain.model.tenant;
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.constants.TenantValidationError;
 import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthValidationException;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.constants.AuthValidationError;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
+import com.jpriva.erpsp.shared.domain.model.TenantId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.shared.domain.model.ValidationError;
 import com.jpriva.erpsp.shared.domain.utils.ValidationErrorUtils;
 
@@ -23,7 +25,7 @@ public class Tenant {
     public Tenant(TenantId tenantId, UserId ownerId, TenantName name, TenantStatus status, Instant createdAt) {
         var val = new ValidationError.Builder();
         if (tenantId == null) {
-            val.addError(TenantValidationError.ID_EMPTY);
+            val.addError(AuthValidationError.TENANT_ID_EMPTY);
         }
         if (ownerId == null) {
             val.addError(TenantValidationError.OWNER_ID_EMPTY);
@@ -94,7 +96,7 @@ public class Tenant {
     public void transferOwnership(UserId newOwnerId) {
         var val = new ValidationError.Builder();
         if (newOwnerId == null) {
-            throw new ErpAuthValidationException(val.addError(TenantValidationError.ID_EMPTY).build());
+            throw new ErpAuthValidationException(val.addError(AuthValidationError.TENANT_ID_EMPTY).build());
         }
         this.ownerId = newOwnerId;
     }

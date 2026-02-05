@@ -2,12 +2,12 @@ package com.jpriva.erpsp.auth.infra.out.persistence.adapters;
 
 import com.jpriva.erpsp.auth.domain.model.role.Role;
 import com.jpriva.erpsp.auth.domain.model.role.RoleId;
-import com.jpriva.erpsp.auth.domain.model.role.RoleName;
-import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
 import com.jpriva.erpsp.auth.domain.ports.out.RoleRepositoryPort;
 import com.jpriva.erpsp.auth.infra.out.persistence.entities.RoleEntity;
 import com.jpriva.erpsp.auth.infra.out.persistence.mapper.RoleMapper;
+import com.jpriva.erpsp.shared.domain.model.RoleName;
+import com.jpriva.erpsp.shared.domain.model.TenantId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,18 +27,15 @@ import java.util.stream.Collectors;
 @Component
 public class RoleRepositoryAdapter implements RoleRepositoryPort {
     private final RoleJpaRepository jpaRepository;
-    private final TenantMembershipJpaRepository membershipRepository;
 
-    public RoleRepositoryAdapter(RoleJpaRepository jpaRepository, TenantMembershipJpaRepository membershipRepository) {
+    public RoleRepositoryAdapter(RoleJpaRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
-        this.membershipRepository = membershipRepository;
     }
 
     @Override
     public void save(Role role) {
         RoleEntity entity = RoleMapper.domainToEntity(role);
         jpaRepository.save(entity);
-        // NOTE: Members are not updated here. They are managed by TenantMembershipManager.
     }
 
     @Override

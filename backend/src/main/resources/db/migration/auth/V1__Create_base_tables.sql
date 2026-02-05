@@ -1,14 +1,52 @@
 CREATE SCHEMA IF NOT EXISTS auth;
 
+CREATE TYPE auth.user_status AS ENUM (
+    'ACTIVE',
+    'BLOCKED',
+    'EMAIL_NOT_VERIFIED'
+    );
+
+CREATE TYPE auth.tenant_status AS ENUM (
+    'ACTIVE',
+    'SUSPENDED',
+    'DELETED'
+    );
+
+CREATE TYPE auth.credential_type AS ENUM (
+    'PASSWORD',
+    'OPENID'
+    );
+
+CREATE TYPE auth.credential_status AS ENUM (
+    'ACTIVE',
+    'DISABLED',
+    'EXPIRED',
+    'COMPROMISED'
+    );
+
+CREATE TYPE auth.membership_status AS ENUM (
+    'ACTIVE',
+    'SUSPENDED',
+    'REMOVED'
+    );
+
+CREATE TYPE auth.invitation_status AS ENUM (
+    'PENDING',
+    'ACCEPTED',
+    'REJECTED',
+    'CANCELLED',
+    'EXPIRED'
+    );
+
 CREATE TABLE auth.users
 (
     user_id    UUID PRIMARY KEY,
-    email      VARCHAR(255) NOT NULL UNIQUE,
-    first_name VARCHAR(100) NOT NULL,
-    last_name  VARCHAR(100) NOT NULL,
-    status     VARCHAR(20)  NOT NULL CHECK (status IN ('ACTIVE', 'SUSPENDED', 'DELETED')),
-    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    email      VARCHAR(255)     NOT NULL UNIQUE,
+    first_name VARCHAR(100)     NOT NULL,
+    last_name  VARCHAR(100)     NOT NULL,
+    status     auth.user_status NOT NULL DEFAULT 'EMAIL_NOT_VERIFIED',
+    created_at TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_user_email ON auth.users (email);
@@ -17,11 +55,11 @@ CREATE INDEX idx_user_status ON auth.users (status);
 CREATE TABLE auth.tenants
 (
     tenant_id  UUID PRIMARY KEY,
-    owner_id   UUID         NOT NULL REFERENCES auth.users (user_id),
-    name       VARCHAR(100) NOT NULL,
-    status     VARCHAR(20)  NOT NULL CHECK (status IN ('ACTIVE', 'SUSPENDED', 'DELETED')),
-    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    owner_id   UUID               NOT NULL REFERENCES auth.users (user_id),
+    name       VARCHAR(100)       NOT NULL,
+    status     auth.tenant_status NOT NULL DEFAULT 'ACTIVE',
+    created_at TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_tenant_owner_id ON auth.tenants (owner_id);
@@ -42,10 +80,10 @@ CREATE INDEX idx_role_tenant_id ON auth.roles (tenant_id);
 CREATE TABLE auth.credentials
 (
     credential_id UUID PRIMARY KEY,
-    user_id       UUID        NOT NULL REFERENCES auth.users (user_id) ON DELETE CASCADE,
-    type          VARCHAR(20) NOT NULL CHECK (type IN ('PASSWORD', 'OPENID')),
-    status        VARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE', 'DISABLED', 'EXPIRED', 'COMPROMISED')),
-    created_at    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id       UUID                   NOT NULL REFERENCES auth.users (user_id) ON DELETE CASCADE,
+    type          auth.credential_type   NOT NULL,
+    status        auth.credential_status NOT NULL,
+    created_at    TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_used_at  TIMESTAMP,
 
     password_hash VARCHAR(255),
@@ -63,13 +101,13 @@ CREATE INDEX idx_credential_type ON auth.credentials (type);
 CREATE TABLE auth.tenant_memberships
 (
     membership_id UUID PRIMARY KEY,
-    user_id       UUID        NOT NULL,
-    tenant_id     UUID        NOT NULL,
-    status        VARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE', 'SUSPENDED', 'REMOVED')),
-    joined_at     TIMESTAMP   NOT NULL,
-    invited_by    UUID        NOT NULL,
-    created_at    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id       UUID                   NOT NULL,
+    tenant_id     UUID                   NOT NULL,
+    status        auth.membership_status NOT NULL,
+    joined_at     TIMESTAMP              NOT NULL,
+    invited_by    UUID                   NOT NULL,
+    created_at    TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_tm_user_id FOREIGN KEY (user_id) REFERENCES auth.users (user_id) ON DELETE CASCADE,
     CONSTRAINT fk_tm_tenant_id FOREIGN KEY (tenant_id) REFERENCES auth.tenants (tenant_id) ON DELETE CASCADE,
     CONSTRAINT fk_tm_invited_by FOREIGN KEY (invited_by) REFERENCES auth.users (user_id),
@@ -102,14 +140,14 @@ CREATE INDEX idx_mr_assigned_at ON auth.membership_roles (assigned_at);
 CREATE TABLE auth.invitations
 (
     invitation_id UUID PRIMARY KEY,
-    tenant_id     UUID         NOT NULL,
-    email         VARCHAR(255) NOT NULL,
-    invited_by    UUID         NOT NULL,
-    status        VARCHAR(20)  NOT NULL CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED', 'EXPIRED')),
-    token         VARCHAR(128) NOT NULL UNIQUE,
-    created_at    TIMESTAMP    NOT NULL,
-    expires_at    TIMESTAMP    NOT NULL,
-    updated_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tenant_id     UUID                   NOT NULL,
+    email         VARCHAR(255)           NOT NULL,
+    invited_by    UUID                   NOT NULL,
+    status        auth.invitation_status NOT NULL,
+    token         VARCHAR(128)           NOT NULL UNIQUE,
+    created_at    TIMESTAMP              NOT NULL,
+    expires_at    TIMESTAMP              NOT NULL,
+    updated_at    TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_inv_tenant_id FOREIGN KEY (tenant_id) REFERENCES auth.tenants (tenant_id) ON DELETE CASCADE,
     CONSTRAINT fk_inv_invited_by FOREIGN KEY (invited_by) REFERENCES auth.users (user_id)
 );
@@ -135,3 +173,14 @@ CREATE TABLE auth.invitation_roles
 );
 
 CREATE INDEX idx_ir_role_id ON auth.invitation_roles (role_id);
+
+CREATE TABLE auth.verification_tokens
+(
+    verification_token_id UUID PRIMARY KEY,
+    user_id               UUID      NOT NULL,
+    expiry_date           TIMESTAMP NOT NULL,
+    created_at            TIMESTAMP NOT NULL,
+    CONSTRAINT fk_vt_user_id FOREIGN KEY (user_id) REFERENCES auth.users (user_id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_verification_token_user ON auth.verification_tokens (user_id);

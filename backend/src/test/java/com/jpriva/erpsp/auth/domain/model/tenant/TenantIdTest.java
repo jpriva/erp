@@ -1,5 +1,6 @@
 package com.jpriva.erpsp.auth.domain.model.tenant;
 
+import com.jpriva.erpsp.shared.domain.model.TenantId;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
 import com.jpriva.erpsp.shared.domain.utils.ErpExceptionTestUtils;
 import org.junit.jupiter.api.Nested;

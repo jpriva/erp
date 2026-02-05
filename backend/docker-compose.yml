@@ -12,10 +12,27 @@ services:
     volumes:
       - pg-erp-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - erp-network
+
+  mailhog:
+    container_name: mailhog-erp
+    image: mailhog/mailhog:latest
+    restart: unless-stopped
+    ports:
+      - "${MAIL_PORT}:1025"
+      - "8025:8025"
+    networks:
+      - erp-network
+
 
 volumes:
   pg-erp-data:
+
+networks:
+  erp-network:
+    driver: bridge

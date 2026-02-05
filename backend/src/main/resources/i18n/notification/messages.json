@@ -1,0 +1,11 @@
+{
+  "email": {
+    "verify": {
+      "title": "Welcome!",
+      "greeting": "Hello {0}",
+      "body": "Please verify...",
+      "button": "Verify",
+      "fallback": "{0}"
+    }
+  }
+}

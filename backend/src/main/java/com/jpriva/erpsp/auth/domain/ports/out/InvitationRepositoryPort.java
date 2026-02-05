@@ -3,8 +3,8 @@ package com.jpriva.erpsp.auth.domain.ports.out;
 import com.jpriva.erpsp.auth.domain.model.invitation.Invitation;
 import com.jpriva.erpsp.auth.domain.model.invitation.InvitationId;
 import com.jpriva.erpsp.auth.domain.model.invitation.InvitationToken;
-import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.TenantId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.shared.domain.model.Email;
 
 import java.time.Instant;

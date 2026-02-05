@@ -3,7 +3,7 @@ package com.jpriva.erpsp.auth.infra.out.persistence.adapters;
 import com.jpriva.erpsp.auth.domain.model.credential.Credential;
 import com.jpriva.erpsp.auth.domain.model.credential.CredentialId;
 import com.jpriva.erpsp.auth.domain.model.credential.CredentialType;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.auth.domain.ports.out.CredentialRepositoryPort;
 import com.jpriva.erpsp.auth.infra.out.persistence.entities.CredentialEntity;
 import com.jpriva.erpsp.auth.infra.out.persistence.mapper.CredentialMapper;

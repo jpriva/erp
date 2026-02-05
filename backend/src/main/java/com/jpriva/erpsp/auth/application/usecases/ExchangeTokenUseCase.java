@@ -5,13 +5,13 @@ import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthException;
 import com.jpriva.erpsp.auth.domain.model.membership.MembershipRole;
 import com.jpriva.erpsp.auth.domain.model.membership.TenantMembership;
-import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
-import com.jpriva.erpsp.auth.domain.model.token.TokenClaims;
 import com.jpriva.erpsp.auth.domain.model.user.User;
 import com.jpriva.erpsp.auth.domain.ports.out.TenantMembershipRepositoryPort;
-import com.jpriva.erpsp.auth.domain.ports.out.TokenHandlerPort;
-import com.jpriva.erpsp.auth.domain.ports.out.TransactionalPort;
 import com.jpriva.erpsp.auth.domain.ports.out.UserRepositoryPort;
+import com.jpriva.erpsp.shared.domain.model.TenantId;
+import com.jpriva.erpsp.shared.domain.model.token.access.TokenClaims;
+import com.jpriva.erpsp.shared.domain.ports.out.TokenHandlerPort;
+import com.jpriva.erpsp.shared.domain.ports.out.TransactionalPort;
 
 /**
  * Use case for exchanging a base access token for one with tenant/role context.
@@ -65,7 +65,7 @@ public class ExchangeTokenUseCase {
                 throw new ErpAuthException(AuthErrorCode.ROLE_NOT_ASSIGNED);
             }
 
-            return tokenHandler.generateAccessTokenWithContext(user, tenantId, cmd.roleName());
+            return tokenHandler.generateAccessTokenWithContext(user.getUserId(), user.getEmail(), tenantId, cmd.roleName());
         });
     }
 }

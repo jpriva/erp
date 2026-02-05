@@ -23,6 +23,8 @@ tasks.withType(Test).configureEach {
 }
 
 tasks.named('test') {
+    description = 'Tests without console output'
+    group = 'verification'
     testLogging {
         showStandardStreams = false
     }
@@ -37,5 +39,21 @@ tasks.register('testWithLog', Test) {
 
     testLogging {
         showStandardStreams = true
+    }
+}
+
+tasks.register('testAot', Test) {
+    description = 'Tests for AOT agents'
+    group = 'verification'
+
+    testClassesDirs = project.sourceSets.test.output.classesDirs
+    classpath = project.sourceSets.test.runtimeClasspath
+
+    dependsOn 'compileAotTestJava'
+    dependsOn 'processAotTestResources'
+
+    systemProperty 'spring.aot.enabled', 'true'
+    testLogging {
+        showStandardStreams = false
     }
 }

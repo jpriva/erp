@@ -6,15 +6,15 @@ import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthException;
 import com.jpriva.erpsp.auth.domain.model.membership.MembershipRole;
 import com.jpriva.erpsp.auth.domain.model.membership.TenantMembership;
 import com.jpriva.erpsp.auth.domain.model.role.RoleId;
-import com.jpriva.erpsp.auth.domain.model.role.RoleName;
-import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
 import com.jpriva.erpsp.auth.domain.model.user.User;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
-import com.jpriva.erpsp.auth.domain.model.utils.FakeTokenHandler;
-import com.jpriva.erpsp.auth.domain.model.utils.FakeTransactional;
 import com.jpriva.erpsp.auth.domain.ports.out.TenantMembershipRepositoryPort;
-import com.jpriva.erpsp.auth.domain.ports.out.TransactionalPort;
 import com.jpriva.erpsp.auth.domain.ports.out.UserRepositoryPort;
+import com.jpriva.erpsp.shared.domain.model.RoleName;
+import com.jpriva.erpsp.shared.domain.model.TenantId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
+import com.jpriva.erpsp.shared.domain.ports.out.TransactionalPort;
+import com.jpriva.erpsp.utils.FakeTokenHandler;
+import com.jpriva.erpsp.utils.FakeTransactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +51,7 @@ class ExchangeTokenUseCaseTest {
         User user = User.create("test@example.com", "John", "Doe");
         TenantId tenantId = TenantId.generate();
         String roleName = "ADMIN";
-        String accessToken = tokenHandler.generateAccessToken(user);
+        String accessToken = tokenHandler.generateAccessToken(user.getUserId(), user.getEmail());
 
         TenantMembership membership = createMembership(user.getUserId(), tenantId, roleName);
 
@@ -87,7 +87,7 @@ class ExchangeTokenUseCaseTest {
     @Test
     void shouldFailWhenUserNotFound() {
         User user = User.create("test@example.com", "John", "Doe");
-        String accessToken = tokenHandler.generateAccessToken(user);
+        String accessToken = tokenHandler.generateAccessToken(user.getUserId(), user.getEmail());
 
         when(userRepository.findById(user.getUserId())).thenReturn(Optional.empty());
 
@@ -105,7 +105,7 @@ class ExchangeTokenUseCaseTest {
     void shouldFailWhenMembershipNotFound() {
         User user = User.create("test@example.com", "John", "Doe");
         TenantId tenantId = TenantId.generate();
-        String accessToken = tokenHandler.generateAccessToken(user);
+        String accessToken = tokenHandler.generateAccessToken(user.getUserId(), user.getEmail());
 
         when(userRepository.findById(user.getUserId())).thenReturn(Optional.of(user));
         when(membershipRepository.findByUserIdAndTenantId(user.getUserId(), tenantId))
@@ -125,7 +125,7 @@ class ExchangeTokenUseCaseTest {
     void shouldFailWhenRoleNotAssigned() {
         User user = User.create("test@example.com", "John", "Doe");
         TenantId tenantId = TenantId.generate();
-        String accessToken = tokenHandler.generateAccessToken(user);
+        String accessToken = tokenHandler.generateAccessToken(user.getUserId(), user.getEmail());
 
         TenantMembership membership = createMembership(user.getUserId(), tenantId, "USER");
 
@@ -146,7 +146,7 @@ class ExchangeTokenUseCaseTest {
     @Test
     void shouldFailWhenUsingRefreshToken() {
         User user = User.create("test@example.com", "John", "Doe");
-        String refreshToken = tokenHandler.generateTokens(user).refreshToken();
+        String refreshToken = tokenHandler.generateTokens(user.getUserId(), user.getEmail()).refreshToken();
 
         ExchangeTokenCommand cmd = new ExchangeTokenCommand(refreshToken, TenantId.generate().toString(), "ADMIN");
 

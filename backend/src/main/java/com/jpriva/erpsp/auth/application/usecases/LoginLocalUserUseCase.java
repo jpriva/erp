@@ -6,14 +6,14 @@ import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthException;
 import com.jpriva.erpsp.auth.domain.model.credential.Credential;
 import com.jpriva.erpsp.auth.domain.model.credential.PasswordCredential;
-import com.jpriva.erpsp.auth.domain.model.token.TokenPair;
 import com.jpriva.erpsp.auth.domain.model.user.User;
 import com.jpriva.erpsp.auth.domain.ports.out.CredentialRepositoryPort;
 import com.jpriva.erpsp.auth.domain.ports.out.PasswordHasherPort;
-import com.jpriva.erpsp.auth.domain.ports.out.TokenHandlerPort;
-import com.jpriva.erpsp.auth.domain.ports.out.TransactionalPort;
 import com.jpriva.erpsp.auth.domain.ports.out.UserRepositoryPort;
 import com.jpriva.erpsp.shared.domain.model.Email;
+import com.jpriva.erpsp.shared.domain.model.token.access.TokenPair;
+import com.jpriva.erpsp.shared.domain.ports.out.TokenHandlerPort;
+import com.jpriva.erpsp.shared.domain.ports.out.TransactionalPort;
 
 public class LoginLocalUserUseCase {
 
@@ -54,7 +54,7 @@ public class LoginLocalUserUseCase {
                 throw new ErpAuthException(AuthErrorCode.CREDENTIAL_INVALID);
             }
 
-            TokenPair tokens = tokenHandler.generateTokens(user);
+            TokenPair tokens = tokenHandler.generateTokens(user.getUserId(), user.getEmail());
             return new TokenView(
                     tokens.accessToken(),
                     "Bearer",

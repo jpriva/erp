@@ -1,7 +1,8 @@
 package com.jpriva.erpsp.auth.domain.model.role;
 
-import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.RoleName;
+import com.jpriva.erpsp.shared.domain.model.TenantId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
 import com.jpriva.erpsp.shared.domain.utils.ErpExceptionTestUtils;

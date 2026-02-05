@@ -2,10 +2,12 @@ package com.jpriva.erpsp.auth.domain.model.user;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.constants.UserValidationError;
+import com.jpriva.erpsp.shared.domain.constants.AuthValidationError;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
 import com.jpriva.erpsp.shared.domain.model.Email;
 import com.jpriva.erpsp.shared.domain.model.PersonName;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.shared.domain.model.ValidationError;
 import com.jpriva.erpsp.shared.domain.utils.ValidationErrorUtils;
 
@@ -22,7 +24,7 @@ public class User {
     public User(UserId userId, Email email, PersonName name, UserStatus status, Instant createdAt) {
         var val = new ValidationError.Builder();
         if (userId == null) {
-            val.addError(UserValidationError.ID_EMPTY);
+            val.addError(AuthValidationError.USER_ID_EMPTY);
         }
         if (email == null) {
             val.addError(UserValidationError.EMAIL_EMPTY);
@@ -93,6 +95,18 @@ public class User {
             val.addValidation(ex.getValidationErrors());
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
+    }
+
+    public boolean isVerifiable() {
+        return this.status == UserStatus.EMAIL_NOT_VERIFIED;
+    }
+
+    public boolean isActive() {
+        return this.status == UserStatus.ACTIVE;
+    }
+
+    public boolean isBlocked() {
+        return this.status == UserStatus.BLOCKED;
     }
 
     public void changeEmail(String emailStr) {

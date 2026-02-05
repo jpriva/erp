@@ -1,7 +1,7 @@
 package com.jpriva.erpsp.auth.infra.out.persistence.mapper;
 
 import com.jpriva.erpsp.auth.domain.model.role.Role;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.auth.infra.out.persistence.entities.RoleEntity;
 
 import java.util.Set;

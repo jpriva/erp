@@ -1,6 +1,6 @@
 package com.jpriva.erpsp.auth.domain.model.credential;
 
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 
 import java.time.Instant;
 

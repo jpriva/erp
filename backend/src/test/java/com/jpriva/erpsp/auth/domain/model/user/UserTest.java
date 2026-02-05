@@ -1,5 +1,6 @@
 package com.jpriva.erpsp.auth.domain.model.user;
 
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
 import com.jpriva.erpsp.shared.domain.model.Email;
@@ -88,9 +89,9 @@ class UserTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        @ValueSource(strings = {"a","a@a"})
+        @ValueSource(strings = {"a", "a@a"})
         void create_ShouldPropagateErrorsFromEmailError(String email) {
-            assertThatThrownBy(()->User.create(email, "John", "Doe"))
+            assertThatThrownBy(() -> User.create(email, "John", "Doe"))
                     .isInstanceOf(ErpValidationException.class)
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
@@ -103,7 +104,7 @@ class UserTest {
         @NullAndEmptySource
         @ValueSource(strings = {"a"})
         void create_ShouldPropagateErrorsFromNameError(String name) {
-            assertThatThrownBy(()->User.create("test@example.com", name, "Doe"))
+            assertThatThrownBy(() -> User.create("test@example.com", name, "Doe"))
                     .isInstanceOf(ErpValidationException.class)
                     .satisfies(exception -> {
                         ErpValidationException ex = (ErpValidationException) exception;
