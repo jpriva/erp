@@ -1,9 +1,9 @@
 package com.jpriva.erpsp.auth.domain.model.membership;
 
 import com.jpriva.erpsp.auth.domain.model.role.RoleId;
-import com.jpriva.erpsp.auth.domain.model.role.RoleName;
-import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.RoleName;
+import com.jpriva.erpsp.shared.domain.model.TenantId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

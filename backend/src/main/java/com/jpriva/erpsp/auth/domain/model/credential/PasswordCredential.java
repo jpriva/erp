@@ -2,7 +2,7 @@ package com.jpriva.erpsp.auth.domain.model.credential;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.constants.CredentialValidationError;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.auth.domain.ports.out.PasswordHasherPort;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;

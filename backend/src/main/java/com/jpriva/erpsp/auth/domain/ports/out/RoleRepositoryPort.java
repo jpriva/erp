@@ -2,8 +2,8 @@ package com.jpriva.erpsp.auth.domain.ports.out;
 
 import com.jpriva.erpsp.auth.domain.model.role.Role;
 import com.jpriva.erpsp.auth.domain.model.role.RoleId;
-import com.jpriva.erpsp.auth.domain.model.role.RoleName;
-import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
+import com.jpriva.erpsp.shared.domain.model.RoleName;
+import com.jpriva.erpsp.shared.domain.model.TenantId;
 
 import java.util.List;
 import java.util.Optional;

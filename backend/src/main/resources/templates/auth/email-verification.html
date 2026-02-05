@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en-US">
+<body>
+<h1 th:text="#{email.verify.title}">Welcome!</h1>
+
+<h2 th:text="#{email.verify.greeting(${name})}">Hello User</h2>
+
+<p th:text="#{email.verify.body}">Please verify...</p>
+
+<a th:href="${link}" th:text="#{email.verify.button}">Verify</a>
+
+<p th:text="#{email.verify.fallback(${link})}">${link}</p>
+</body>
+</html>

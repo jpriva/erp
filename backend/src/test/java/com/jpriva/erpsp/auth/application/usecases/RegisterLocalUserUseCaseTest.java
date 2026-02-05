@@ -4,10 +4,12 @@ import com.jpriva.erpsp.auth.application.dto.RegisterUserCommand;
 import com.jpriva.erpsp.auth.application.dto.UserView;
 import com.jpriva.erpsp.auth.domain.model.credential.Credential;
 import com.jpriva.erpsp.auth.domain.model.user.User;
-import com.jpriva.erpsp.auth.domain.model.utils.FakeLogger;
-import com.jpriva.erpsp.auth.domain.model.utils.FakePasswordHasher;
-import com.jpriva.erpsp.auth.domain.model.utils.FakeTransactional;
 import com.jpriva.erpsp.auth.domain.ports.out.*;
+import com.jpriva.erpsp.shared.domain.ports.out.LoggerPort;
+import com.jpriva.erpsp.shared.domain.ports.out.TransactionalPort;
+import com.jpriva.erpsp.utils.FakeLogger;
+import com.jpriva.erpsp.utils.FakePasswordHasher;
+import com.jpriva.erpsp.utils.FakeTransactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,10 @@ class RegisterLocalUserUseCaseTest {
     @Spy
     private LoggerPort log = new FakeLogger();
     private final PasswordHasherPort passwordHasher = new FakePasswordHasher();
+    @Mock
+    private AuthEventPort eventPort;
+    @Mock
+    private VerificationTokenRepositoryPort verificationTokenRepository;
 
     private RegisterLocalUserUseCase useCase;
 
@@ -39,7 +45,9 @@ class RegisterLocalUserUseCaseTest {
                 credentialRepository,
                 transactional,
                 log,
-                passwordHasher
+                passwordHasher,
+                eventPort,
+                verificationTokenRepository
         );
     }
 
@@ -51,7 +59,7 @@ class RegisterLocalUserUseCaseTest {
         String password = "password";
         RegisterUserCommand newUser = new RegisterUserCommand(email, firstName, lastName);
 
-        UserView response = useCase.execute(newUser, password);
+        UserView response = useCase.execute(newUser, password, null);
 
         assertThat(response).isNotNull();
         assertThat(response.id()).isNotNull();

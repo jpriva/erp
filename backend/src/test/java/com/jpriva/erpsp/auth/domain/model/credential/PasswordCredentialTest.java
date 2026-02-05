@@ -1,19 +1,19 @@
 package com.jpriva.erpsp.auth.domain.model.credential;
 
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
-import com.jpriva.erpsp.auth.domain.model.utils.PasswordTestUtils;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.shared.domain.utils.ErpExceptionTestUtils;
+import com.jpriva.erpsp.utils.PasswordTestUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.UUID;
 
+import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static com.jpriva.erpsp.shared.domain.utils.ValidationErrorAssertions.assertHasFieldError;
 
 class PasswordCredentialTest {
 

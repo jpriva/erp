@@ -5,7 +5,7 @@ spring:
     import: optional:file:.env[.properties]
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?stringtype=unspecified
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
   flyway:
@@ -22,10 +22,25 @@ spring:
     user:
       name: ${SECURITY_USER}
       password: ${SECURITY_PASSWORD}
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_AUTH:true}
+          starttls:
+            enable: ${MAIL_STARTTLS_ENABLE:true}
 
 app:
+  frontend-url: ${APP_FRONTEND_URL}
   jwt:
     secret: ${APP_JWT_SECRET}
+  mail:
+    from-address: ${APP_MAIL_FROM_ADDRESS}
+    from-name: ${APP_MAIL_FROM_NAME}
 
 logging:
   level:

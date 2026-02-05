@@ -3,11 +3,11 @@ package com.jpriva.erpsp.auth.application.usecases;
 import com.jpriva.erpsp.auth.application.dto.TokenView;
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.exceptions.ErpAuthException;
-import com.jpriva.erpsp.auth.domain.model.token.TokenClaims;
 import com.jpriva.erpsp.auth.domain.model.user.User;
-import com.jpriva.erpsp.auth.domain.ports.out.TokenHandlerPort;
-import com.jpriva.erpsp.auth.domain.ports.out.TransactionalPort;
 import com.jpriva.erpsp.auth.domain.ports.out.UserRepositoryPort;
+import com.jpriva.erpsp.shared.domain.model.token.access.TokenClaims;
+import com.jpriva.erpsp.shared.domain.ports.out.TokenHandlerPort;
+import com.jpriva.erpsp.shared.domain.ports.out.TransactionalPort;
 
 public class RefreshTokenUseCase {
 
@@ -33,7 +33,7 @@ public class RefreshTokenUseCase {
             User user = userRepository.findById(claims.userId())
                     .orElseThrow(() -> new ErpAuthException(AuthErrorCode.USER_NOT_FOUND));
 
-            String newAccessToken = tokenHandler.generateAccessToken(user);
+            String newAccessToken = tokenHandler.generateAccessToken(user.getUserId(), user.getEmail());
 
             return new TokenView(
                     newAccessToken,

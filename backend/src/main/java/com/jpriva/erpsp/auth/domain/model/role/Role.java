@@ -2,10 +2,12 @@ package com.jpriva.erpsp.auth.domain.model.role;
 
 import com.jpriva.erpsp.auth.domain.constants.AuthErrorCode;
 import com.jpriva.erpsp.auth.domain.constants.RoleValidationError;
-import com.jpriva.erpsp.auth.domain.model.tenant.TenantId;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.constants.AuthValidationError;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpPersistenceCompromisedException;
 import com.jpriva.erpsp.shared.domain.exceptions.ErpValidationException;
+import com.jpriva.erpsp.shared.domain.model.RoleName;
+import com.jpriva.erpsp.shared.domain.model.TenantId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.shared.domain.model.ValidationError;
 import com.jpriva.erpsp.shared.domain.utils.ValidationErrorUtils;
 
@@ -30,7 +32,7 @@ public class Role {
             val.addError(RoleValidationError.TENANT_ID_EMPTY);
         }
         if (name == null) {
-            val.addError(RoleValidationError.NAME_EMPTY);
+            val.addError(AuthValidationError.NAME_EMPTY);
         }
         ValidationErrorUtils.validate(AuthErrorCode.AUTH_MODULE, val);
 

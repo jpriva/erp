@@ -9,3 +9,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+app:
+  frontend-url: https://test-url.com
+  mail:
+    from-address: "test@example.com"
+    from-name: "John Doe"

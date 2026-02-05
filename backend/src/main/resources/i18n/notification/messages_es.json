@@ -1,0 +1,11 @@
+{
+  "email": {
+    "verify": {
+      "title": "Bienvenido!",
+      "greeting": "Hola {0}",
+      "body": "Por favor verifica tu cuenta...",
+      "button": "Verificar",
+      "fallback": "{0}"
+    }
+  }
+}

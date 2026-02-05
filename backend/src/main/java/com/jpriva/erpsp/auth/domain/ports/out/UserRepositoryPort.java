@@ -1,7 +1,7 @@
 package com.jpriva.erpsp.auth.domain.ports.out;
 
 import com.jpriva.erpsp.auth.domain.model.user.User;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.shared.domain.model.Email;
 
 import java.util.Optional;

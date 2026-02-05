@@ -3,8 +3,6 @@ package com.jpriva.erpsp.auth.domain.constants;
 import com.jpriva.erpsp.shared.domain.exceptions.ValidationErrorCode;
 
 public enum UserValidationError implements ValidationErrorCode {
-    ID_EMPTY("userId", "validation.auth.user.id.empty", "User ID cannot be empty."),
-    ID_INVALID_FORMAT("userId", "validation.auth.user.id.invalid.format", "Invalid user ID format."),
     EMAIL_EMPTY("email", "validation.auth.user.email.empty", "Email cannot be empty"),
     NAME_EMPTY("name", "validation.auth.user.name.empty", "Name cannot be empty"),
     STATUS_EMPTY("status", "validation.auth.user.status.empty", "Status cannot be empty"),

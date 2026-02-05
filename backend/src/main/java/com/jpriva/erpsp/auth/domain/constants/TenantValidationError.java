@@ -3,8 +3,6 @@ package com.jpriva.erpsp.auth.domain.constants;
 import com.jpriva.erpsp.shared.domain.exceptions.ValidationErrorCode;
 
 public enum TenantValidationError implements ValidationErrorCode {
-    ID_EMPTY("tenantId", "validation.auth.tenant.id.empty", "Tenant ID cannot be empty."),
-    ID_INVALID_FORMAT("tenantId", "validation.auth.tenant.id.invalid.format", "Tenant ID format is invalid."),
     OWNER_ID_EMPTY("ownerId", "validation.auth.owner.id.empty", "Owner ID cannot be empty."),
     NAME_EMPTY("name", "validation.auth.tenant.name.empty", "Tenant name cannot be empty."),
     NAME_MIN_LENGTH("name", "validation.auth.tenant.name.min.length", "Tenant name must be at least 3 characters long."),

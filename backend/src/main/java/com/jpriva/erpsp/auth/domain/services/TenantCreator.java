@@ -4,7 +4,7 @@ import com.jpriva.erpsp.auth.domain.model.membership.MembershipRole;
 import com.jpriva.erpsp.auth.domain.model.membership.TenantMembership;
 import com.jpriva.erpsp.auth.domain.model.role.Role;
 import com.jpriva.erpsp.auth.domain.model.tenant.Tenant;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 import com.jpriva.erpsp.auth.domain.ports.out.RoleRepositoryPort;
 import com.jpriva.erpsp.auth.domain.ports.out.TenantMembershipRepositoryPort;
 import com.jpriva.erpsp.auth.domain.ports.out.TenantRepositoryPort;

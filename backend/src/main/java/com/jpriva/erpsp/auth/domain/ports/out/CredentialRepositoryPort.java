@@ -2,7 +2,7 @@ package com.jpriva.erpsp.auth.domain.ports.out;
 
 import com.jpriva.erpsp.auth.domain.model.credential.Credential;
 import com.jpriva.erpsp.auth.domain.model.credential.CredentialId;
-import com.jpriva.erpsp.auth.domain.model.user.UserId;
+import com.jpriva.erpsp.shared.domain.model.UserId;
 
 import java.util.List;
 import java.util.Optional;
